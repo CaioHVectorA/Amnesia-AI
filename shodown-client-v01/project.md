@@ -16,13 +16,41 @@ O objetivo do projeto é desenvolver um robô que jogue de forma ótima o pokemo
 - 1500: Regular
 - Abaixo de 1500: Insatisfatório
 
-Ademais, o projeto será dividido em duas etapas:
+Além disso, o projeto será dividido em duas etapas:
 - O Cliente: Um sistema de _Web Scraping_ que será responsável por acessar o site do pokemon Showdown e coletar os dados necessários para o treinamento do modelo, além de futuramente fazer as ações do robô.
 - O Modelo: Um modelo de Machine Learning que será treinado com os dados coletados pelo cliente e que será responsável por jogar o jogo de forma ótima.
 
 O cliente será satisfatório se for capaz de coletar os dados necessários para o treinamento do modelo em larga escala e de forma eficiente. O modelo será satisfatório se for capaz de jogar o jogo de forma ótima e gerar resultados satisfatórios.
 
+## Problemas iniciais
+
+
+### Complexidade
+O Pokémon competitivo pode ser comparado a diversos outros jogos de um contra um, como damas, alguns jogos de carta, ou xadrez. Entretanto, enquanto o xadrez possui 10^47 possibilidades de estados, o Pokémon possui 10^358 possibilidades de estados no turno inicial! Mantendo a analogia, uma vez que as peças de xadrez possuem diferentes comportamentos, o Pokémon possui mais de 800 peças diferentes, entretanto, cada um pode apresentar comportamentos individuais variados, como se fossem peças de xadrez que mudam de comportamento a cada partida. Isso exponencializa o número de possibilidades de estados do jogo.
+
+É claro que o modelo não precisa estar _afiado_ para todas elas, mas isso se mostra um desafio para o projeto, uma vez que o modelo deve trabalhar com um espaço de estados muito grande. Veja, de forma resumida e simplificada, algumas das variáveis que o modelo deve considerar:
+- Os climas(chuva, sol, etc)
+- Os pokemons, e suas várias características(estatísticas, habilidades, tipos, etc)
+- Os terrenos(que alteram o comportamento dos pokemons)
+- Os _hazards_ (que causam dano passivo aos pokemons)
+- O estado atual do jogo(vida dos pokemons, status, etc)
+- Ações especiais(mega evolução, z-moves, etc)
+
+### Predição
+Assim como o xadrez, pokemon também envolve um alto grau de estratégia e planejamento. Isto é, o usuário deve prever os movimentos do adversário e se preparar e reagir a eles. Entretanto, diferente do xadrez, cada turno é constituído por ações dos dois jogadores simultaneamente, o que torna as predições mais dinâmicas e complexas. Por exemplo, se eu tiver um pokemon que é fraco contra um tipo de ataque, eu posso trocá-lo por outro pokemon que seja resistente a esse tipo de ataque. Entretanto, se o adversário prever essa troca e usar um ataque que seja super efetivo contra o pokemon que eu pretendo trocar, eu posso acabar perdendo o pokemon que eu pretendia salvar. Porém, eu também posso prever que o adversário vai prever a minha troca; E isso, na prática, gera um embate mental entre os jogadores.
+
+O modelo deve ser capaz de aprender sobre predições e estar preparado para elas. Em alto nível, os jogadores tem um alto senso de predições, e isso é de alta importância para o sucesso no jogo. O modelo também não pode ser muito previsível, uma vez que o adversário pode se aproveitar disso.
+
+### Tradução de dados
+Muitos dados são numéricos, como as estatísticas dos pokemons, entretanto, muitos dados são categóricos, desde tipo dos pokemons, que são facilmente traduzidos para números, até habilidades e efeitos, que são mais complexos de serem traduzidos. O modelo deve ser capaz de lidar com esses dados de forma eficiente.
+
+Por exemplo, a habilidade _Levitate_ faz com que o pokemon seja imune a ataques do tipo _Ground_. O modelo deve ser capaz de entender que um pokemon com a habilidade _Levitate_ não pode ser atingido por ataques do tipo _Ground_. Outro exemplo é o ataque _bullet seed_, que apesar de ter apenas 25 de poder, pode atingir até 5 vezes, o que resulta em um poder total de 125. O modelo deve ser capaz de entender que o ataque _bullet seed_, assim como outros ataques _multi-hit_, podem atingir mais de uma vez e não deve considerar apenas o poder base do ataque. São inúmeros exemplos de habilidades e efeitos que mudam completamente o comportamento do jogo e que o modelo deve ser capaz de lidar.
+
 ## Metodologia
+
+### Coleta de Dados
+
+### Simulações iniciais
 
 ### Cliente
 
@@ -32,8 +60,16 @@ O cliente será desenvolvido em Python e utilizará algoritmos de Web Scraping p
 
 ## Implementação da aplicação
 
+
+
 ## Resultados e Discussão
 
 ## Conclusão
 
 ## Referências
+
+https://cs230.stanford.edu/projects_fall_2018/reports/12447633.pdf
+http://julian.togelius.com/Lee2017Showdown.pdf
+https://webthesis.biblio.polito.it/26843/
+
+https://www.youtube.com/watch?v=rhvj7CmTRkg
