@@ -46,11 +46,29 @@ Muitos dados são numéricos, como as estatísticas dos pokemons, entretanto, mu
 
 Por exemplo, a habilidade _Levitate_ faz com que o pokemon seja imune a ataques do tipo _Ground_. O modelo deve ser capaz de entender que um pokemon com a habilidade _Levitate_ não pode ser atingido por ataques do tipo _Ground_. Outro exemplo é o ataque _bullet seed_, que apesar de ter apenas 25 de poder, pode atingir até 5 vezes, o que resulta em um poder total de 125. O modelo deve ser capaz de entender que o ataque _bullet seed_, assim como outros ataques _multi-hit_, podem atingir mais de uma vez e não deve considerar apenas o poder base do ataque. São inúmeros exemplos de habilidades e efeitos que mudam completamente o comportamento do jogo e que o modelo deve ser capaz de lidar.
 
+### Variabilidade dos formatos
+
+Semelhante a campeonatos de artes marciais, o competitivo de pokemon possui vários formatos, que são regras diferentes que alteram o comportamento do jogo. Por exemplo, o formato _OU_ permite que os jogadores usem qualquer pokemon, enquanto o formato _Uber_ permite que os jogadores usem pokemons que são considerados muito fortes para o formato _OU_. Os citados precisam de um time pré-definido de 6 pokemons, enquanto outros formatos, como o _Random Battle_, dão um time aleatório de 6 pokemons para os jogadores. Deve-se escolher um formato para o modelo jogar.
+
+Os modelos com times pré-definidos são mais fáceis de serem treinados, uma vez que o modelo pode aprender sobre os pokemons de forma menos abrangente. Entretanto, outros problemas surgem, como a escolha do time - que é um problema totalmente diferente de um modelo focado em batalhar - e menos demanda por batalhas. Os modelos com times aleatórios são mais difíceis de serem treinados, dado que trabalharão com diversos pokemons, mas terá mais demanda por batalhas.
+
+Qual formato escolher? Como lidar com a variabilidade dos formatos? Como lidar com a variabilidade dos times?
+
 ## Metodologia
 
 ### Coleta de Dados
 
+Apesar dos vários obstáculos citados acima, o nosso maior aliado é o fato de termos acesso a uma grande quantidade de dados. O site do pokemon Showdown possui uma API que nos permite acessar os dados de batalhas em alta quantidade. Além disso, temos dados relacionados a pokemons, habilidades, ataques, etc também, dentro do site: [https://play.pokemonshowdown.com/data/](https://play.pokemonshowdown.com/data/)
+
+E com isso podemos trabalhar com pré-treinamento de modelos com batalhas antes existentes, além de acumular dados para treinamento de modelos futuros, se o algoritmo de treinamento for capaz de lidar com a quantidade de dados.
+
+Apenas deve-se lidar com a formatação de dados, uma vez que alguns formatos são até mesmo em plain texts e devem ser formatados.
+
 ### Simulações iniciais
+
+Ainda que o cliente seja uma interface de aplicação do modelo, a simulação de batalhas pode ser inicialmente delegada a uma biblioteca já existente, que o próprio pokemon Showdown disponibiliza. Viva o open source! A biblioteca `[pokemon-showdown](https://github.com/smogon/pokemon-showdown)` é uma biblioteca em Node.js que simula batalhas pokemon e que pode ser utilizada para testar o modelo. Entretanto, será um desafio fazer a comunicação entre o modelo e a biblioteca, uma vez que o modelo será desenvolvido em Python.
+
+Entretanto, para uma performance melhor, deve-se tentar trabalhar com multithreading na simulação de batalhas e no aprendizado do modelo, uma vez que o modelo deve ser capaz de aprender em tempo real e de forma eficiente.
 
 ### Cliente
 
