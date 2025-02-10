@@ -54,6 +54,17 @@ Os modelos com times pré-definidos são mais fáceis de serem treinados, uma ve
 
 Qual formato escolher? Como lidar com a variabilidade dos formatos? Como lidar com a variabilidade dos times?
 
+### Compreensão de metagame
+
+Assim como outros jogos, o Pokémon competitivo se luxa de um metagame diverso. Um metagame constituí de forma abstrata aqueles pokémons que, no determinado formato, se sobressaem sobre os outros em viabilidade, ou seja, o quão bom é ter aquele pokémon em seu time.
+
+Mas, além disso, o pokémon como franquia traz a ideia de `gimmick`, ou seja, é de suma importância selecionar os pokémons que combinam entre si, sendo  um a cura da ferida do outro, por exemplo análogo.
+
+Dessa forma, o modelo deve ter o "olho" que vai lhe indicar certas situações. Há pokémons que são altamente variáveis em suas usabilidades, como um Garchomo que pode ser usado como `sweeper` (nome dado aos pokémons que tem como função abater o maior número de pokémons), `speed control` (nome dado a aqueles que, por uso de itens ou habilidades, tem uma velocidade grande O ponto de ser uma arma ao mesmo tempo que uma válvula de escape, que pode ser mais rápido e evitar um _sweep_) Ou até mesmo um `tank` (nome dado aí pokémon que tem como função ser uma barreira defensiva). O modelo não pode agir da mesma forma para os três usos de Garchomo; Ou confundir e agir como se fosse um Garchomo tank quando ele é um sweeper, o que pode comprometer a partida.
+### Adaptabilidade 
+Outro papel importante do modelo é estar preparado para diferentes tipos de jogadores. Como citado na sessão `predição`, a mesma é uma estratégia que envolve risco. Logo, há jogadores que tomam mais riscos, os que jogam "agressivos" enquanto há aqueles que preferem tomar menos riscos e ter mais segurança. Uma vez que o modelo não deve ser altamente previsível, ele deve-se adaptar aos diferentes tipos de jogador.
+
+Além dos tipos de jogador, há também aqueles mais habilidosos e os mais iniciantes, que jogam de forma completamente diferente, e portanto, seu oponente reage de uma forma diferente. É muito comum que, num contexto de combate entre dois iniciantes, estratégias simplórias consigam garantir vitórias nos primeiros dez turnos, como os `fears`, que é estratégia de utilizar um pokémon de nível um propositalmente pra enganar o adversário e garantir um abate.
 ## Metodologia
 
 ### Coleta de Dados
