@@ -26,7 +26,7 @@ O cliente será satisfatório se for capaz de coletar os dados necessários para
 
 
 ### Complexidade
-O Pokémon competitivo pode ser comparado a diversos outros jogos de um contra um, como damas, alguns jogos de carta, ou xadrez. Entretanto, enquanto o xadrez possui 10^47 possibilidades de estados, o Pokémon possui 10^358 possibilidades de estados no turno inicial! Mantendo a analogia, uma vez que as peças de xadrez possuem diferentes comportamentos, o Pokémon possui mais de 800 peças diferentes, entretanto, cada um pode apresentar comportamentos individuais variados, como se fossem peças de xadrez que mudam de comportamento a cada partida. Isso exponencializa o número de possibilidades de estados do jogo.
+O Pokémon competitivo pode ser comparado a diversos outros jogos de um contra um, como damas, alguns jogos de carta, ou xadrez. Entretanto, enquanto o xadrez possui 10^47 possibilidades de estados, o Pokémon possui 10^358 possibilidades de estados no turno inicial! Mantendo a analogia, uma vez que as peças de xadrez possuem diferentes comportamentos, o Pokémon possui mais de 1000 peças diferentes, entretanto, cada um pode apresentar comportamentos individuais variados, como se fossem peças de xadrez que mudam de comportamento a cada partida. Isso exponencializa o número de possibilidades de estados do jogo.
 
 É claro que o modelo não precisa estar _afiado_ para todas elas, mas isso se mostra um desafio para o projeto, uma vez que o modelo deve trabalhar com um espaço de estados muito grande. Veja, de forma resumida e simplificada, algumas das variáveis que o modelo deve considerar:
 - Os climas(chuva, sol, etc)
@@ -61,10 +61,22 @@ Assim como outros jogos, o Pokémon competitivo se luxa de um metagame diverso. 
 Mas, além disso, o pokémon como franquia traz a ideia de `gimmick`, ou seja, é de suma importância selecionar os pokémons que combinam entre si, sendo  um a cura da ferida do outro, por exemplo análogo.
 
 Dessa forma, o modelo deve ter o "olho" que vai lhe indicar certas situações. Há pokémons que são altamente variáveis em suas usabilidades, como um Garchomo que pode ser usado como `sweeper` (nome dado aos pokémons que tem como função abater o maior número de pokémons), `speed control` (nome dado a aqueles que, por uso de itens ou habilidades, tem uma velocidade grande O ponto de ser uma arma ao mesmo tempo que uma válvula de escape, que pode ser mais rápido e evitar um _sweep_) Ou até mesmo um `tank` (nome dado aí pokémon que tem como função ser uma barreira defensiva). O modelo não pode agir da mesma forma para os três usos de Garchomo; Ou confundir e agir como se fosse um Garchomo tank quando ele é um sweeper, o que pode comprometer a partida.
-### Adaptabilidade 
-Outro papel importante do modelo é estar preparado para diferentes tipos de jogadores. Como citado na sessão `predição`, a mesma é uma estratégia que envolve risco. Logo, há jogadores que tomam mais riscos, os que jogam "agressivos" enquanto há aqueles que preferem tomar menos riscos e ter mais segurança. Uma vez que o modelo não deve ser altamente previsível, ele deve-se adaptar aos diferentes tipos de jogador.
 
+### Adaptabilidade 
+Outro papel importante do modelo é estar preparado para diferentes tipos de jogadores. Como citado na sessão `predição`, a mesma é uma estratégia que envolve risco. Logo, há jogadores que tomam mais riscos, os que jogam "agressivos" enquanto há aqueles que preferem tomar menos riscos e ter mais segurança, um meio termo; Além disso, há um estilo de jogo específico denominado `stall`, que é constituido por jogadores com um time totalmente defensivo que tem como objetivo vencer a partir do cansaço. Uma vez que o modelo não deve ser altamente previsível, ele deve-se adaptar aos diferentes tipos de jogador.
+pokémons
 Além dos tipos de jogador, há também aqueles mais habilidosos e os mais iniciantes, que jogam de forma completamente diferente, e portanto, seu oponente reage de uma forma diferente. É muito comum que, num contexto de combate entre dois iniciantes, estratégias simplórias consigam garantir vitórias nos primeiros dez turnos, como os `fears`, que é estratégia de utilizar um pokémon de nível um propositalmente pra enganar o adversário e garantir um abate.
+
+### Casos especiais
+
+Como um jogo com mais de 1000 opções diferentes, sendo cada opção particular, é esperado que algumas dessas sejam realmente únicas, o que pode gerar situações inusitadas que costumam enganar os jogadores mais inexperientes. O modelo deve ser capaz de lidar com esses casos especiais. Veja algum deles:
+- _Ditto_: Um pokémon que copia o oponente a partir da habilidade _Imposter_
+- _Shedinja_: Um pokémon que só pode ser atingido por ataques super efetivos, mas que possui apenas 1 de vida, ou seja, ele é noucateado por qualquer ataque que o atinja e qualquer efeito de status que o cause dano.
+- _Zoroark_: Um pokémon que pode se disfarçar de outro pokémon do time, o que pode enganar o adversário.
+- _Smeargle_: Um pokémon que pode aprender qualquer ataque, o que pode torna ele menos previsível.
+- _Slaking_: Um pokémon que possui um poder de ataque muito alto, mas que só pode atacar a cada dois turnos, o que torna ele menos poderoso.
+
+Para lidar com esses casos de forma eficiente e generalizada, deve ser engenhado uma uma forma de classificação dos pokémons do oponente, que será armazenada na memória e assim será possível ter dados mais assertivos para a tomada de decisão a partir dos pokémons do oponente.
 ## Metodologia
 
 ### Coleta de Dados
