@@ -1,0 +1,11 @@
+{
+  "team": [
+    "Torkoal||HeatRock|Drought|StealthRock,LavaPlume,BodyPress,RapidSpin|Bold|248,,252,,8,|M|,,,,,0|||",
+    "Venusaur||LifeOrb|Chlorophyll|Growth,GigaDrain,EarthPower,WeatherBall|Modest|,,,252,4,252|F|,0,,,,|||",
+    "Heatran||ChoiceScarf|FlashFire|Eruption,MagmaStorm,EarthPower,FlashCannon|Timid|,,,252,4,252||,0,,,,|||",
+    "Landorus-Therian||Leftovers|Intimidate|Earthquake,Toxic,Uturn,Defog|Careful|252,,,,240,16|M||||",
+    "Peluche|Clefable|EjectButton|MagicGuard|Moonblast,KnockOff,SoftBoiled,HealingWish|Bold|252,,252,,4,|F||||",
+    "Godpult|Dragapult|ChoiceSpecs|Infiltrator|ShadowBall,DracoMeteor,Uturn,Flamethrower|Modest|,,,252,4,252|M||||"
+  ],
+  "name": "Sun team"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "simulator",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@pkmn/client": "^0.6.30",
+    "@pkmn/data": "^0.9.29",
+    "@pkmn/dex": "^0.9.29",
+    "@pkmn/dex-types": "^0.9.29",
+    "@pkmn/img": "^0.2.34",
+    "@pkmn/randoms": "^0.9.29",
+    "@pkmn/sets": "^5.1.2",
+    "@pkmn/sim": "^0.9.29",
+    "@pkmn/smogon": "^0.5.18",
+    "@pkmn/spreads": "^0.1.0",
+    "@pkmn/types": "^4.0.0",
+    "pokemon-showdown": "^0.11.9"
+  }
+}
