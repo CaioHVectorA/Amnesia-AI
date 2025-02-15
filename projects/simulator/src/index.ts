@@ -6,6 +6,8 @@ import {
   type PokemonSet,
 } from "@pkmn/sim";
 import { TeamGenerators } from "@pkmn/randoms";
+import readline from "readline";
+
 const rain = [
   "Pelipper||DampRock|Drizzle|Hurricane,Uturn,Defog,Roost|Sassy|248,,8,,252,|||||",
   "Seismitoad||LifeOrb|SwiftSwim|WeatherBall,EarthPower,IcyWind,FocusBlast|Modest|,,,252,4,252||,0,,,,|||",
@@ -23,13 +25,14 @@ const sun = [
   "Peluche|Clefable|EjectButton|MagicGuard|Moonblast,KnockOff,SoftBoiled,HealingWish|Bold|252,,252,,4,|F||||",
   "Godpult|Dragapult|ChoiceSpecs|Infiltrator|ShadowBall,DracoMeteor,Uturn,Flamethrower|Modest|,,,252,4,252|M||||",
 ].join("]");
+
 Teams.setGeneratorFactory(TeamGenerators);
 
 const streams = BattleStreams.getPlayerStreams(
   new BattleStreams.BattleStream()
 );
 const spec = { formatid: "gen8customgame" };
-console.log(Teams.pack(Teams.generate("gen8randombattle")));
+// console.log(Teams.pack(Teams.generate("gen8randombattle")));
 const p1spec = {
   name: "Sun",
   team: sun,
@@ -39,17 +42,36 @@ const p2spec = {
   team: rain,
 };
 
-const p1 = new RandomPlayerAI(streams.p1);
-const p2 = new RandomPlayerAI(streams.p2);
-void p1.start();
-void p2.start();
-
-void (async () => {
+// Mostra no terminal todas as mensagens enviadas pelo simulador
+(async () => {
   for await (const chunk of streams.omniscient) {
     console.log(chunk);
   }
 })();
 
-void streams.omniscient.write(`>start ${JSON.stringify(spec)}
+// Inicializa a batalha com comandos pré-definidos
+streams.omniscient.write(`>start ${JSON.stringify(spec)}
 >player p1 ${JSON.stringify(p1spec)}
->player p2 ${JSON.stringify(p2spec)}`);
+>player p2 ${JSON.stringify(p2spec)}\n`);
+
+// Configuração do readline para ler comandos do usuário via CLI
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: ">", // Prompt para indicar onde digitar
+});
+
+rl.prompt();
+let count = 0;
+rl.on("line", (line) => {
+  // Envia o comando digitado para o stream do simulador
+  if (count % 2 === 0) {
+    streams.p1.write(line.trim() + "\n");
+  } else {
+    streams.p2.write(line.trim() + "\n");
+  }
+  rl.prompt();
+}).on("close", () => {
+  console.log("Encerrando a interface CLI.");
+  process.exit(0);
+});
