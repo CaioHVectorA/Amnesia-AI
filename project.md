@@ -77,6 +77,13 @@ Como um jogo com mais de 1000 opções diferentes, sendo cada opção particular
 - _Slaking_: Um pokémon que possui um poder de ataque muito alto, mas que só pode atacar a cada dois turnos, o que torna ele menos poderoso.
 
 Para lidar com esses casos de forma eficiente e generalizada, deve ser engenhado uma uma forma de classificação dos pokémons do oponente, que será armazenada na memória e assim será possível ter dados mais assertivos para a tomada de decisão a partir dos pokémons do oponente.
+
+### Sorte
+
+Uma das caraterísticas do jogo é a introdução da sorte como um contrapeso para algumas estratégias. O jogo possui uma mecânica chamada _RNG_ (Random Number Generator), que é um gerador de números aleatórios que é utilizado para determinar o sucesso de algumas ações. Por exemplo, movimentos que causam efeito de status como "dormindo", que é muito efetivo, tem altas chances de errar. Movimentos tem uma chance de acerto de 0 a 100%; E naturalmente golpes com muito poder tem cada vez menos chance de acerto. 
+
+Jogadores cada vez mais habilidosos tentam minimizar a sorte e maximizar a habilidade, o que torna as jogadas mais flexíveis. Um caso simples é que o modelo não deve usar um ataque forte, porém com pouca chance de acerto se o oponente já estiver altamente enfraquecido.
+
 ## Metodologia
 
 ### Coleta de Dados
