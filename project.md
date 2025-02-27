@@ -48,7 +48,7 @@ Por exemplo, a habilidade _Levitate_ faz com que o pokemon seja imune a ataques 
 
 ### Variabilidade dos formatos
 
-Semelhante a campeonatos de artes marciais, o competitivo de pokemon possui vários formatos, que são regras diferentes que alteram o comportamento do jogo. Por exemplo, o formato _OU_ permite que os jogadores usem qualquer pokemon, enquanto o formato _Uber_ permite que os jogadores usem pokemons que são considerados muito fortes para o formato _OU_. Os citados precisam de um time pré-definido de 6 pokemons, enquanto outros formatos, como o _Random Battle_, dão um time aleatório de 6 pokemons para os jogadores. Deve-se escolher um formato para o modelo jogar.
+Semelhante a campeonatos de artes marciais, o competitivo de pokemon possui vários formatos, que são regras diferentes que alteram o comportamento do jogo. Por exemplo, o formato _OU_ (overused) permite que os jogadores usem basicamente qualquer pokemon, enquanto o formato _Uber_ permite que os jogadores usem pokemons que são considerados muito fortes, logo são banidos, em _OU_. Os citados e os demais formatos precisam de um time pré-definido de 6 pokemons, enquanto outros formatos, como o _Random Battle_, dão um time aleatório de 6 pokemons para os jogadores. Deve-se escolher um formato para o modelo jogar.
 
 Os modelos com times pré-definidos são mais fáceis de serem treinados, uma vez que o modelo pode aprender sobre os pokemons de forma menos abrangente. Entretanto, outros problemas surgem, como a escolha do time - que é um problema totalmente diferente de um modelo focado em batalhar - e menos demanda por batalhas. Os modelos com times aleatórios são mais difíceis de serem treinados, dado que trabalharão com diversos pokemons, mas terá mais demanda por batalhas.
 
@@ -60,7 +60,7 @@ Assim como outros jogos, o Pokémon competitivo se luxa de um metagame diverso. 
 
 Mas, além disso, o pokémon como franquia traz a ideia de `gimmick`, ou seja, é de suma importância selecionar os pokémons que combinam entre si, sendo  um a cura da ferida do outro, por exemplo análogo.
 
-Dessa forma, o modelo deve ter o "olho" que vai lhe indicar certas situações. Há pokémons que são altamente variáveis em suas usabilidades, como um Garchomo que pode ser usado como `sweeper` (nome dado aos pokémons que tem como função abater o maior número de pokémons), `speed control` (nome dado a aqueles que, por uso de itens ou habilidades, tem uma velocidade grande O ponto de ser uma arma ao mesmo tempo que uma válvula de escape, que pode ser mais rápido e evitar um _sweep_) Ou até mesmo um `tank` (nome dado aí pokémon que tem como função ser uma barreira defensiva). O modelo não pode agir da mesma forma para os três usos de Garchomo; Ou confundir e agir como se fosse um Garchomo tank quando ele é um sweeper, o que pode comprometer a partida.
+Dessa forma, o modelo deve reconhecer certas situações ocasionais. Há pokémons que são altamente versáteis, assim como um `Garchomp` que pode ser utilizado de forma ofensiva com diferentes abordagens, ou pode ser usado defensivo, com alguns padrões. Geralmente, jogadores experientes reconhecem a usabilidade do pokémon na partida a partir da estrutura do time do oponente ou conforme o pokémon (nesse caso o Garchomp) revela-se na batalha. De certa forma, de forma algorítmica, é possível resolver esse problema trabalhando com classificação probabilísticas.
 
 ### Adaptabilidade 
 Outro papel importante do modelo é estar preparado para diferentes tipos de jogadores. Como citado na sessão `predição`, a mesma é uma estratégia que envolve risco. Logo, há jogadores que tomam mais riscos, os que jogam "agressivos" enquanto há aqueles que preferem tomar menos riscos e ter mais segurança, um meio termo; Além disso, há um estilo de jogo específico denominado `stall`, que é constituido por jogadores com um time totalmente defensivo que tem como objetivo vencer a partir do cansaço. Uma vez que o modelo não deve ser altamente previsível, ele deve-se adaptar aos diferentes tipos de jogador.
@@ -80,7 +80,7 @@ Para lidar com esses casos de forma eficiente e generalizada, deve ser engenhado
 
 ### Sorte
 
-Uma das caraterísticas do jogo é a introdução da sorte como um contrapeso para algumas estratégias. O jogo possui uma mecânica chamada _RNG_ (Random Number Generator), que é um gerador de números aleatórios que é utilizado para determinar o sucesso de algumas ações. Por exemplo, movimentos que causam efeito de status como "dormindo", que é muito efetivo, tem altas chances de errar. Movimentos tem uma chance de acerto de 0 a 100%; E naturalmente golpes com muito poder tem cada vez menos chance de acerto. 
+Uma das caraterísticas do jogo é a introdução da sorte como um contrapeso para algumas estratégias. O jogo possui uma mecânica chamada _RNG_ (Random Number Generator), que é um gerador de números aleatórios que é utilizado para determinar o sucesso de algumas ações. Por exemplo, movimentos que causam efeito de status como "dormindo", que notavelmente é o status mais efetivo, tem altas chances de errar. Movimentos tem uma chance de acerto de 0 a 100%; E naturalmente golpes com muito poder tem cada vez menos chance de acerto. 
 
 Jogadores cada vez mais habilidosos tentam minimizar a sorte e maximizar a habilidade, o que torna as jogadas mais flexíveis. Um caso simples é que o modelo não deve usar um ataque forte, porém com pouca chance de acerto se o oponente já estiver altamente enfraquecido.
 
@@ -98,13 +98,49 @@ Apenas deve-se lidar com a formatação de dados, uma vez que alguns formatos s�
 
 Ainda que o cliente seja uma interface de aplicação do modelo, a simulação de batalhas pode ser inicialmente delegada a uma biblioteca já existente, que o próprio pokemon Showdown disponibiliza. Viva o open source! A biblioteca `[pokemon-showdown](https://github.com/smogon/pokemon-showdown)` é uma biblioteca em Node.js que simula batalhas pokemon e que pode ser utilizada para testar o modelo. Entretanto, será um desafio fazer a comunicação entre o modelo e a biblioteca, uma vez que o modelo será desenvolvido em Python.
 
-Entretanto, para uma performance melhor, deve-se tentar trabalhar com multithreading na simulação de batalhas e no aprendizado do modelo, uma vez que o modelo deve ser capaz de aprender em tempo real e de forma eficiente.
+Entretanto, para uma performance melhor, deve-se tentar trabalhar com *multithreading* na simulação de batalhas e no aprendizado do modelo, uma vez que o modelo deve ser capaz de aprender em tempo real e de forma eficiente.
 
 ### Cliente
 
 O cliente será desenvolvido em Python e utilizará algoritmos de Web Scraping para coletar os dados necessários para o treinamento do modelo; Ou seja, ele rodará um navegador e lerá as informações do site do pokemon Showdown, fazendo ações simples de um usuário como clicar num botão ou digitar num campo de texto. Entretanto, como a idealização de um web scrapping, tudo é automático por via de código. Para tal, será utilizado a biblioteca `selenium` para automatizar o navegador.
 
 ### Modelo
+
+#### Pré-processamento
+
+#### Agente
+
+Uma vez que o modelo tem como objetivo batalhar, ou seja, **atuar** ele será um agente. O agente é a parte do modelo que toma decisões e que interage com o ambiente. Podemos interpretar a interface de uma batalha no pokemon Showdown:
+
+![Uma captura de tela de uma batalha Pokémon](assets/image.png)
+
+Na imagem nota-se que há o conjunto de ações
+- Atacar, quatro opções
+- Trocar de pokémon, cinco opções
+- Usar um efeito especial, uma opção(o efeito é mutável dependendo da geração da batalha)
+
+Ocasionalmente, as opções de ataque e troca são mutáveis, pois os ataques podem ficar indisponíveis por diversos motivos; As trocas diminuem conforme os pokémons são nocauteados. Sistematicamente, o modelo deve notar que pokémons com HP zero nunca são selecionados para troca, logo, o modelo aprende que é impossível. Entretanto, associar indisponibilidade de ataques pode ser desafiador em alguns casos. O que bloqueia ataques são:
+
+- Taunt: Um efeito que bloqueia ataques que não sejam de dano direto
+- Disable: Um efeito que bloqueia um ataque por 4 turnos
+- Encore: Um efeito que faz o oponente repetir o último ataque por 3 turnos, ou seja, bloqueia todos os outros ataques
+- Torment: Um efeito que bloqueia o uso do mesmo ataque duas vezes seguidas
+- Choice items: Itens que bloqueiam o uso de todos os ataques, exceto o primeiro selecionado
+- Imprison: Um efeito que bloqueia o uso de ataques que o oponente também possui
+- Heal block: Um efeito que bloqueia o uso de ataques de cura
+
+O modelo deve ser capaz de lidar com esses casos de forma eficiente e generalizada. Ademais, é visível que trabalhar com valores entre cada ação é mais eficiente e mais telemétrico. Cada possível ação vai ter o valor em um intervalo entre 0 e 1 que representa o quão otimizado é a ação. Isso vai ser útil para fins de análise; E num contexto satisfatório, os contextos de indisponibilidade de ações vão ter valores próximos de zero.
+
+Os efeitos especiais são mais complexos. Eles são:
+- Mega evolução: Um efeito que aumenta as estatísticas do pokémon
+- Z-move: Um efeito que causa um dano muito alto
+- Dynamax: Um efeito que aumenta as estatísticas do pokémon e causa um dano muito alto
+- Terastal: Um efeito que muda o tipo do pokémon.
+
+Cada efeito é único, o que faz com que não possa ser generalizado. Entretanto, como cada um foi introduzido em uma geração diferente, o modelo pode aprender a lidar apenas com um efeito por vez, o que simplifica o problema.
+
+#### Algoritmo
+
 
 ## Implementação da aplicação
 
