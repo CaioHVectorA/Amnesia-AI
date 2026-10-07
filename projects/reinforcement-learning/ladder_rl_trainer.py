@@ -625,8 +625,9 @@ class OnlineRLTrainer:
         self.buffer = TransitionBuffer(capacity=10000)
         self.reward_engine = DynamicMatrixRewardEngine()
 
-        self.total_updates = 0
-        self.total_transitions_collected = 0
+        if not hasattr(self, "total_updates") or self.total_updates == 0:
+            self.total_updates = resume_updates
+            self.total_transitions_collected = resume_updates * self.update_interval
 
     def optimize_ppo(self, transitions: List[Dict[str, Any]]):
         if len(transitions) < 32:
