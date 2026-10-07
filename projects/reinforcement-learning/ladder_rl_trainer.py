@@ -424,6 +424,7 @@ class LiveLadderWorker:
                 if name and not name.startswith("Guest") and not self._logged_in:
                     self._logged_in = True
                     self.username = name
+                    print(f"✅ [Worker #{self.worker_id}] Logged in as '{name}'", flush=True)
                     self.search_ladder()
 
             elif msg_type == "updatesearch":
@@ -434,6 +435,7 @@ class LiveLadderWorker:
                         for b_room in games:
                             if b_room not in self.active_battles:
                                 self.active_battles.append(b_room)
+                                print(f"⚔️ [Worker #{self.worker_id}] Joined: {b_room}", flush=True)
                                 self.send("/timer on", room=b_room)
                 except Exception:
                     pass
