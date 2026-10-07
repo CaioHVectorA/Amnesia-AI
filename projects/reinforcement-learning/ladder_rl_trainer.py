@@ -621,9 +621,14 @@ class OnlineRLTrainer:
             time.sleep(0.3)  # Stagger handshakes
 
         # Training Loop: monitors buffer and triggers CUDA PPO updates
+        loop_counter = 0
         while True:
             time.sleep(2.0)
+            loop_counter += 1
             cur_size = self.buffer.size()
+            if loop_counter % 5 == 0:
+                print(f"📊 [LADDER RL STATUS] Buffer: {cur_size}/{self.update_interval} transitions | Total Turns Collected: {self.total_transitions_collected} | PPO Updates: {self.total_updates}", flush=True)
+
             if cur_size >= self.update_interval:
                 transitions = self.buffer.sample_all()
                 self.total_transitions_collected += len(transitions)
