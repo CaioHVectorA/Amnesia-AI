@@ -11,6 +11,7 @@ Key Capabilities:
 """
 
 import argparse
+import glob
 import json
 import os
 import random
@@ -561,6 +562,14 @@ class LiveLadderWorker:
         t_ws = threading.Thread(target=self.run, daemon=True)
         t_ws.start()
 
+    def stop(self):
+        self.running = False
+        try:
+            if self.ws and self.ws.sock:
+                self.ws.close()
+        except Exception:
+            pass
+
 
 class OnlineRLTrainer:
     def __init__(
@@ -568,9 +577,12 @@ class OnlineRLTrainer:
         num_workers: int = 20,
         checkpoint_path: str = "projects/reinforcement-learning/weights/ppo_model.pt",
         replays_dir: str = "data/replays/ladder_rl",
-        update_interval_transitions: int = 300,
+        update_interval_transitions: int = 250,
         lr: float = 2e-4,
-        ppo_epochs: int = 4
+        ppo_epochs: int = 4,
+        max_updates: int = 20,
+        target_winrate: float = 60.0,
+        resume_updates: int = 0
     ):
         self.num_workers = num_workers
         self.checkpoint_path = checkpoint_path
@@ -578,6 +590,10 @@ class OnlineRLTrainer:
         self.update_interval = update_interval_transitions
         self.lr = lr
         self.ppo_epochs = ppo_epochs
+        self.max_updates = max_updates
+        self.target_winrate = target_winrate
+        self.total_updates = resume_updates
+        self.total_transitions_collected = resume_updates * update_interval_transitions
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print("=" * 80)
@@ -587,6 +603,8 @@ class OnlineRLTrainer:
         print(f"Active Ladder Workers: {self.num_workers} simultaneous online battle connections")
         print(f"Replay Directory:     {self.replays_dir}")
         print(f"Policy Checkpoint:    {self.checkpoint_path}")
+        print(f"Max PPO Updates:      {self.max_updates} (Starting at #{self.total_updates})")
+        print(f"Target Win Rate:      {self.target_winrate:.1f}%")
         print("=" * 80 + "\n", flush=True)
 
         self.model = PPOActorCriticNet(
@@ -656,6 +674,26 @@ class OnlineRLTrainer:
             os.makedirs(os.path.dirname(self.checkpoint_path), exist_ok=True)
             torch.save({"model_state_dict": self.model.state_dict()}, self.checkpoint_path)
 
+    def compute_recent_winrate(self, window: int = 20) -> Tuple[float, int]:
+        files = sorted(glob.glob(os.path.join(self.replays_dir, "*.json")), key=os.path.getmtime)
+        results = []
+        for f in files:
+            try:
+                with open(f, "r", encoding="utf-8") as fp:
+                    data = json.load(fp)
+                bot = data.get("bot_username", "").strip().lower()
+                winner = data.get("winner", "").strip().lower()
+                if winner and bot:
+                    results.append(1 if (bot in winner or winner in bot) else 0)
+            except Exception:
+                pass
+
+        if not results:
+            return 0.0, 0
+        recent = results[-window:] if len(results) >= window else results
+        wr = (sum(recent) / len(recent)) * 100.0
+        return wr, len(recent)
+
     def start(self):
         workers = [
             LiveLadderWorker(
@@ -682,24 +720,48 @@ class OnlineRLTrainer:
             loop_counter += 1
             cur_size = self.buffer.size()
             if loop_counter % 5 == 0:
-                print(f"📊 [LADDER RL STATUS] Buffer: {cur_size}/{self.update_interval} transitions | Total Turns Collected: {self.total_transitions_collected} | PPO Updates: {self.total_updates}", flush=True)
+                print(f"📊 [LADDER RL STATUS] Buffer: {cur_size}/{self.update_interval} transitions | Total Turns Collected: {self.total_transitions_collected} | PPO Updates: {self.total_updates}/{self.max_updates}", flush=True)
 
             if cur_size >= self.update_interval:
                 transitions = self.buffer.sample_all()
                 self.total_transitions_collected += len(transitions)
                 self.optimize_ppo(transitions)
 
+                # Check stopping conditions after each update
+                recent_wr, sample_size = self.compute_recent_winrate(window=20)
+                print(f"📈 [PERFORMANCE EVAL] Recent Win Rate: {recent_wr:.1f}% (Last {sample_size} matches) | Target: {self.target_winrate:.1f}%", flush=True)
+
+                if sample_size >= 15 and recent_wr >= self.target_winrate:
+                    print(f"\n🎉 [TARGET WINRATE ACHIEVED!] Win rate reached {recent_wr:.1f}% >= {self.target_winrate:.1f}%. Stopping training as requested!", flush=True)
+                    break
+
+                if self.total_updates >= self.max_updates:
+                    print(f"\n🎯 [TARGET UPDATES REACHED!] Completed {self.total_updates}/{self.max_updates} PPO GPU updates. Stopping training as requested!", flush=True)
+                    break
+
+        print("\n🛑 Gracefully shutting down all 20 ladder worker threads...", flush=True)
+        for w in workers:
+            w.stop()
+        print(f"💾 Final weights persisted at {self.checkpoint_path}")
+        print("✅ Training finished successfully.", flush=True)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Live Ladder Online RL Trainer")
     parser.add_argument("--workers", type=int, default=20, help="Number of concurrent ladder workers")
-    parser.add_argument("--batch", type=int, default=300, help="Transitions per PPO update")
+    parser.add_argument("--batch", type=int, default=250, help="Transitions per PPO update")
     parser.add_argument("--lr", type=float, default=2e-4, help="PPO learning rate")
+    parser.add_argument("--max-updates", type=int, default=20, help="Stop after N updates")
+    parser.add_argument("--target-winrate", type=float, default=60.0, help="Stop when win rate >= target %")
+    parser.add_argument("--resume-updates", type=int, default=0, help="Existing updates count")
     args = parser.parse_args()
 
     trainer = OnlineRLTrainer(
         num_workers=args.workers,
         update_interval_transitions=args.batch,
-        lr=args.lr
+        lr=args.lr,
+        max_updates=args.max_updates,
+        target_winrate=args.target_winrate,
+        resume_updates=args.resume_updates
     )
     trainer.start()
