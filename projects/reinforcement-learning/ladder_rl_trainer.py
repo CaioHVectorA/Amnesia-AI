@@ -118,10 +118,10 @@ class LiveLadderWorker:
         self.rooms: Dict[str, List[str]] = {}
         self.room_requests: Dict[str, Any] = {}
         self.active_battles: set = set()
+        self.is_searching: bool = False
         self._logged_in = False
         self.last_challstr = None
         self.running = True
-        self.last_search_time = 0.0
 
         # Per-room state memory for PPO transitions
         self.room_prev_transition: Dict[str, Dict[str, Any]] = {}
@@ -138,11 +138,9 @@ class LiveLadderWorker:
             self.ws.send(f"{room}|{message}")
 
     def search_ladder(self):
-        if not self.active_battles and self._logged_in:
-            now = time.time()
-            if now - self.last_search_time >= 3.0:
-                self.last_search_time = now
-                self.send(f"/search {self.format_id}")
+        if not self.active_battles and not self.is_searching and self._logged_in:
+            self.is_searching = True
+            self.send(f"/search {self.format_id}")
 
     def handle_login(self, challstr: str):
         self.last_challstr = challstr
@@ -456,6 +454,9 @@ class LiveLadderWorker:
             elif msg_type == "updatesearch":
                 try:
                     search_data = json.loads(parts[2])
+                    searching = search_data.get("searching") or []
+                    self.is_searching = (self.format_id in searching)
+
                     games = search_data.get("games")
                     if games:
                         current_rooms = set()
@@ -530,17 +531,21 @@ class LiveLadderWorker:
                     del self.room_action_history[room]
 
                 time.sleep(0.5)
+                self.is_searching = False
                 self.search_ladder()
 
             elif msg_type == "deinit":
                 base_id = self.get_base_room_id(room)
                 self.active_battles.discard(base_id)
                 self.active_battles.discard(room)
+                if len(self.active_battles) == 0:
+                    self.is_searching = False
+                    self.search_ladder()
 
     def _search_loop(self):
         while self.running:
-            time.sleep(4.0)
-            if self._logged_in and len(self.active_battles) == 0:
+            time.sleep(3.0)
+            if self._logged_in and len(self.active_battles) == 0 and not self.is_searching:
                 self.search_ladder()
 
     def run(self):
