@@ -141,8 +141,25 @@ Cada efeito é único, o que faz com que não possa ser generalizado. Entretanto
 
 #### Algoritmo
 
+Para viabilizar a tomada de decisão ótima em um espaço de estados tão vasto ($> 10^{358}$ ramificações), o agente utiliza uma estratégia de aprendizado dividida em etapas progressivas:
 
-## Implementação da aplicação
+1. **Behavioral Cloning (BC) & Imitação Ponderada**:
+   - Inicialização supervisionada treinando redes neurais (*Policy & Value Networks*) a partir de milhões de turnos de partidas de especialistas coletadas dos replays do Pokémon Showdown.
+   - Ponderação amostral por Elo: partidas de jogadores de alta pontuação ($\ge 1800-2400$) possuem peso superior na função de perda de entropia cruzada, enquanto partidas de desistência precoce (*forfeits* de tilt) recebem penalidade.
+   - Validação estrita via *Action Masking*, impossibilitando a rede de prever jogadas ilegais ou inviáveis no turno.
+
+2. **Mitigação do Erro Composto (Distributional Shift)**:
+   - Aplicação de **DAgger (Dataset Aggregation)** ou **Offline RL / IQL (Implicit Q-Learning)** para que a rede aprenda a se recuperar de estados desfavoráveis e cenários fora da distribuição original dos especialistas.
+
+3. **Fusão e Composição de Modelos (Model Merging)**:
+   - Interpolação no espaço de parâmetros utilizando **SLERP (Spherical Linear Interpolation)** e **Task Arithmetic / Model Soups** para unificar pesos treinados em formatos diferentes (`Random Battles` e `OU`) ou especialistas em diferentes fases da partida (Early Game vs Late Game Sweepers).
+   - Roteamento dinâmico via **Mixture-of-Experts (MoE)** para alternar entre comportamentos ofensivos e conservadores conforme o estilo do oponente for identificado.
+
+Para aprofundamento formal e especificações completas, consulte o diretório de documentação técnica em [`docs/`](docs/README.md):
+- [`docs/behavioral_cloning.md`](docs/behavioral_cloning.md): Formulação matemática, funções de perda e algoritmos de imitação.
+- [`docs/model_merging.md`](docs/model_merging.md): Técnicas de fusão de checkpoints, SLERP, EMA e orquestração de estados de treino.
+- [`docs/state_representation.md`](docs/state_representation.md): Vetorização de estados, embeddings e máscaras de ação.
+- [`docs/battle_protocol.md`](docs/battle_protocol.md): Protocolo de comunicação Showdown e processamento de replays.
 
 
 

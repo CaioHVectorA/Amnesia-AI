@@ -19,7 +19,6 @@
     "@pkmn/sim": "^0.9.29",
     "@pkmn/smogon": "^0.5.18",
     "@pkmn/spreads": "^0.1.0",
-    "@pkmn/types": "^4.0.0",
-    "pokemon-showdown": "^0.11.9"
+    "@pkmn/types": "^4.0.0"
   }
 }
