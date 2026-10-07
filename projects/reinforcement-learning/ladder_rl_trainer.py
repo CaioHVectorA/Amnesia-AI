@@ -11,6 +11,7 @@ Key Capabilities:
 """
 
 import argparse
+import datetime
 import glob
 import json
 import os
@@ -101,7 +102,8 @@ class LiveLadderWorker:
         reward_engine: DynamicMatrixRewardEngine,
         replays_dir: str,
         format_id: str = "gen9randombattleblitz",
-        server_url: str = SHOWDOWN_WS_URL
+        server_url: str = SHOWDOWN_WS_URL,
+        registry: Optional[Dict[int, Any]] = None
     ):
         self.worker_id = worker_id
         self.model = shared_model
@@ -111,6 +113,7 @@ class LiveLadderWorker:
         self.replays_dir = replays_dir
         self.format_id = format_id
         self.server_url = server_url
+        self.registry = registry
         self.data = ShowdownData.get()
 
         self.username = f"Amnesia_{random.randint(100, 999)}_{worker_id}"
@@ -119,6 +122,7 @@ class LiveLadderWorker:
         self.room_requests: Dict[str, Any] = {}
         self.active_battles: set = set()
         self.is_searching: bool = False
+        self.search_start_time: float = 0.0
         self._logged_in = False
         self.last_challstr = None
         self.running = True
@@ -140,6 +144,7 @@ class LiveLadderWorker:
     def search_ladder(self):
         if not self.active_battles and not self.is_searching and self._logged_in:
             self.is_searching = True
+            self.search_start_time = time.time()
             self.send(f"/search {self.format_id}")
 
     def handle_login(self, challstr: str):
@@ -451,6 +456,11 @@ class LiveLadderWorker:
                     print(f"✅ [Worker #{self.worker_id}] Logged in as '{name}'", flush=True)
                     self.search_ladder()
 
+            elif msg_type == "pm":
+                sender = parts[2].strip()
+                if len(parts) > 4 and "/challenge" in parts[4]:
+                    self.send(f"/accept {sender}")
+
             elif msg_type == "updatesearch":
                 try:
                     search_data = json.loads(parts[2])
@@ -545,8 +555,19 @@ class LiveLadderWorker:
     def _search_loop(self):
         while self.running:
             time.sleep(3.0)
-            if self._logged_in and len(self.active_battles) == 0 and not self.is_searching:
+            if not self._logged_in:
+                continue
+
+            if len(self.active_battles) == 0 and not self.is_searching:
                 self.search_ladder()
+
+            elif len(self.active_battles) == 0 and self.is_searching and (time.time() - self.search_start_time > 8.0):
+                if self.registry and (self.worker_id % 2 == 1):
+                    peer_id = self.worker_id + 1
+                    peer = self.registry.get(peer_id)
+                    if peer and peer._logged_in and len(peer.active_battles) == 0:
+                        self.send(f"/challenge {peer.username}, {self.format_id}")
+                        self.search_start_time = time.time()
 
     def run(self):
         while self.running:
@@ -587,7 +608,8 @@ class OnlineRLTrainer:
         ppo_epochs: int = 4,
         max_updates: int = 20,
         target_winrate: float = 60.0,
-        resume_updates: int = 0
+        resume_updates: int = 0,
+        stop_time: Optional[str] = "23:00"
     ):
         self.num_workers = num_workers
         self.checkpoint_path = checkpoint_path
@@ -599,6 +621,16 @@ class OnlineRLTrainer:
         self.target_winrate = target_winrate
         self.total_updates = resume_updates
         self.total_transitions_collected = resume_updates * update_interval_transitions
+        self.stop_time = stop_time
+        self.stop_hour = None
+        self.stop_min = None
+        if stop_time and ":" in stop_time:
+            try:
+                parts = stop_time.split(":")
+                self.stop_hour = int(parts[0])
+                self.stop_min = int(parts[1])
+            except Exception:
+                pass
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print("=" * 80)
@@ -610,6 +642,7 @@ class OnlineRLTrainer:
         print(f"Policy Checkpoint:    {self.checkpoint_path}")
         print(f"Max PPO Updates:      {self.max_updates} (Starting at #{self.total_updates})")
         print(f"Target Win Rate:      {self.target_winrate:.1f}%")
+        print(f"Scheduled Shutdown:   {self.stop_time if self.stop_time else 'None'}")
         print("=" * 80 + "\n", flush=True)
 
         self.model = PPOActorCriticNet(
@@ -701,18 +734,21 @@ class OnlineRLTrainer:
         return wr, len(recent)
 
     def start(self):
-        workers = [
-            LiveLadderWorker(
+        workers_dict = {}
+        workers = []
+        for i in range(self.num_workers):
+            w = LiveLadderWorker(
                 worker_id=i + 1,
                 shared_model=self.model,
                 model_lock=self.model_lock,
                 buffer=self.buffer,
                 reward_engine=self.reward_engine,
                 replays_dir=self.replays_dir,
-                format_id="gen9randombattleblitz"
+                format_id="gen9randombattleblitz",
+                registry=workers_dict
             )
-            for i in range(self.num_workers)
-        ]
+            workers_dict[i + 1] = w
+            workers.append(w)
 
         print(f"🚀 Spawning {self.num_workers} Ladder Worker Threads (Random Battle Blitz)...", flush=True)
         for w in workers:
@@ -727,6 +763,12 @@ class OnlineRLTrainer:
             cur_size = self.buffer.size()
             if loop_counter % 5 == 0:
                 print(f"📊 [LADDER RL STATUS] Buffer: {cur_size}/{self.update_interval} transitions | Total Turns Collected: {self.total_transitions_collected} | PPO Updates: {self.total_updates}/{self.max_updates}", flush=True)
+
+                if self.stop_hour is not None:
+                    now_dt = datetime.datetime.now()
+                    if now_dt.hour > self.stop_hour or (now_dt.hour == self.stop_hour and now_dt.minute >= self.stop_min):
+                        print(f"\n⏰ [TIME SHUTDOWN TRIGGERED] Scheduled time {self.stop_time} reached! Stopping training.", flush=True)
+                        break
 
             if cur_size >= self.update_interval:
                 transitions = self.buffer.sample_all()
@@ -760,6 +802,7 @@ if __name__ == "__main__":
     parser.add_argument("--max-updates", type=int, default=20, help="Stop after N updates")
     parser.add_argument("--target-winrate", type=float, default=60.0, help="Stop when win rate >= target %")
     parser.add_argument("--resume-updates", type=int, default=0, help="Existing updates count")
+    parser.add_argument("--stop-time", type=str, default="23:00", help="Stop at clock time (e.g. 23:00)")
     args = parser.parse_args()
 
     trainer = OnlineRLTrainer(
@@ -768,6 +811,7 @@ if __name__ == "__main__":
         lr=args.lr,
         max_updates=args.max_updates,
         target_winrate=args.target_winrate,
-        resume_updates=args.resume_updates
+        resume_updates=args.resume_updates,
+        stop_time=args.stop_time
     )
     trainer.start()
