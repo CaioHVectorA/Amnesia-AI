@@ -19,6 +19,11 @@ import sys
 import threading
 import time
 from typing import Dict, List, Optional, Tuple, Any
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 import requests
 import websocket
 import numpy as np
@@ -111,22 +116,32 @@ class LiveLadderWorker:
         self.ws: Optional[websocket.WebSocketApp] = None
         self.rooms: Dict[str, List[str]] = {}
         self.room_requests: Dict[str, Any] = {}
-        self.active_battles: List[str] = []
+        self.active_battles: set = set()
         self._logged_in = False
         self.last_challstr = None
+        self.running = True
+        self.last_search_time = 0.0
 
         # Per-room state memory for PPO transitions
         self.room_prev_transition: Dict[str, Dict[str, Any]] = {}
         self.room_action_history: Dict[str, List[str]] = {}
+
+    def get_base_room_id(self, r: str) -> str:
+        parts = r.split("-")
+        if len(parts) >= 3 and parts[0] == "battle":
+            return f"{parts[0]}-{parts[1]}-{parts[2]}"
+        return r
 
     def send(self, message: str, room: str = ""):
         if self.ws and self.ws.sock and self.ws.sock.connected:
             self.ws.send(f"{room}|{message}")
 
     def search_ladder(self):
-        if not self.active_battles:
-            time.sleep(random.uniform(0.5, 2.0))
-            self.send(f"/search {self.format_id}")
+        if not self.active_battles and self._logged_in:
+            now = time.time()
+            if now - self.last_search_time >= 3.0:
+                self.last_search_time = now
+                self.send(f"/search {self.format_id}")
 
     def handle_login(self, challstr: str):
         self.last_challstr = challstr
@@ -377,17 +392,27 @@ class LiveLadderWorker:
 
         return action_cmd
 
-    def save_replay(self, room: str, winner: str):
+    def save_replay(self, room: str, winner: str, is_win: bool):
         """Saves battle logs into structured replay storage."""
         try:
             os.makedirs(self.replays_dir, exist_ok=True)
             replay_path = os.path.join(self.replays_dir, f"{room}.json")
+            history = self.rooms.get(room, [])
+            turn_count = 0
+            for line in history:
+                if line.startswith("|turn|"):
+                    try:
+                        turn_count = int(line.split("|")[2])
+                    except Exception:
+                        pass
             data = {
                 "id": room,
                 "winner": winner,
                 "bot_username": self.username,
-                "log": "\n".join(self.rooms.get(room, [])),
-                "timestamp": int(time.time())
+                "won": is_win,
+                "turns": turn_count,
+                "timestamp": int(time.time()),
+                "log": "\n".join(history)
             }
             with open(replay_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
@@ -432,11 +457,16 @@ class LiveLadderWorker:
                     search_data = json.loads(parts[2])
                     games = search_data.get("games")
                     if games:
+                        current_rooms = set()
                         for b_room in games:
-                            if b_room not in self.active_battles:
-                                self.active_battles.append(b_room)
+                            base_id = self.get_base_room_id(b_room)
+                            current_rooms.add(base_id)
+                            if base_id not in self.active_battles:
                                 print(f"⚔️ [Worker #{self.worker_id}] Joined: {b_room}", flush=True)
                                 self.send("/timer on", room=b_room)
+                        self.active_battles = current_rooms
+                    else:
+                        self.active_battles.clear()
                 except Exception:
                     pass
 
@@ -489,23 +519,47 @@ class LiveLadderWorker:
                     del self.room_prev_transition[room]
 
                 # Save official replay file
-                self.save_replay(room, winner)
+                self.save_replay(room, winner, is_win)
 
                 self.send(f"/leave {room}")
-                if room in self.active_battles:
-                    self.active_battles.remove(room)
+                base_id = self.get_base_room_id(room)
+                self.active_battles.discard(base_id)
+                self.active_battles.discard(room)
                 if room in self.room_action_history:
                     del self.room_action_history[room]
 
-                time.sleep(1.0)
+                time.sleep(0.5)
+                self.search_ladder()
+
+            elif msg_type == "deinit":
+                base_id = self.get_base_room_id(room)
+                self.active_battles.discard(base_id)
+                self.active_battles.discard(room)
+
+    def _search_loop(self):
+        while self.running:
+            time.sleep(4.0)
+            if self._logged_in and len(self.active_battles) == 0:
                 self.search_ladder()
 
     def run(self):
-        self.ws = websocket.WebSocketApp(
-            self.server_url,
-            on_message=self.on_message
-        )
-        self.ws.run_forever()
+        while self.running:
+            try:
+                self.ws = websocket.WebSocketApp(
+                    self.server_url,
+                    on_message=self.on_message
+                )
+                self.ws.run_forever()
+            except Exception:
+                pass
+            time.sleep(2.0)
+
+    def start(self):
+        self.running = True
+        t_search = threading.Thread(target=self._search_loop, daemon=True)
+        t_search.start()
+        t_ws = threading.Thread(target=self.run, daemon=True)
+        t_ws.start()
 
 
 class OnlineRLTrainer:
@@ -618,8 +672,7 @@ class OnlineRLTrainer:
 
         print(f"🚀 Spawning {self.num_workers} Ladder Worker Threads (Random Battle Blitz)...", flush=True)
         for w in workers:
-            t = threading.Thread(target=w.run, daemon=True)
-            t.start()
+            w.start()
             time.sleep(0.3)  # Stagger handshakes
 
         # Training Loop: monitors buffer and triggers CUDA PPO updates
