@@ -1,0 +1,1322 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.730412227289118,
+    "val_loss": 0.722575304664184,
+    "val_top1": 55.46068072437694,
+    "val_top2": 80.64675208445585,
+    "lr": 0.0015,
+    "epoch_sec": 3.717597484588623,
+    "benchmark": null
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.7177523958801043,
+    "val_loss": 0.7158284816786508,
+    "val_top1": 55.811362453310934,
+    "val_top2": 81.00747938374992,
+    "lr": 0.0015,
+    "epoch_sec": 2.709833860397339,
+    "benchmark": null
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.7115287740435144,
+    "val_loss": 0.7137024291207857,
+    "val_top1": 56.0898987223861,
+    "val_top2": 81.24035396937013,
+    "lr": 0.0015,
+    "epoch_sec": 2.4765889644622803,
+    "benchmark": null
+  },
+  {
+    "epoch": 4,
+    "train_loss": 0.7067880244931766,
+    "val_loss": 0.7095156596085735,
+    "val_top1": 56.396745235203326,
+    "val_top2": 81.41934776851353,
+    "lr": 0.0015,
+    "epoch_sec": 2.4748387336730957,
+    "benchmark": null
+  },
+  {
+    "epoch": 5,
+    "train_loss": 0.7035363507349499,
+    "val_loss": 0.7080461928777606,
+    "val_top1": 56.577565501684916,
+    "val_top2": 81.525282874129,
+    "lr": 0.0015,
+    "epoch_sec": 2.8370413780212402,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 15.0,
+        "wins": 3,
+        "total": 20,
+        "avg_turns": 47.6
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 45.75
+      },
+      "overall_win_rate": 7.5,
+      "total_wins": 3,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 6,
+    "train_loss": 0.7004686732693474,
+    "val_loss": 0.7057693505955633,
+    "val_top1": 56.57665226801581,
+    "val_top2": 81.68053259787582,
+    "lr": 0.0015,
+    "epoch_sec": 2.7351508140563965,
+    "benchmark": null
+  },
+  {
+    "epoch": 7,
+    "train_loss": 0.6972441022152162,
+    "val_loss": 0.7055211329014501,
+    "val_top1": 56.71911672039525,
+    "val_top2": 81.71249577629428,
+    "lr": 0.0015,
+    "epoch_sec": 2.7297918796539307,
+    "benchmark": null
+  },
+  {
+    "epoch": 8,
+    "train_loss": 0.6945287621650759,
+    "val_loss": 0.7042515762498446,
+    "val_top1": 56.83875033104721,
+    "val_top2": 81.74263248737455,
+    "lr": 0.0015,
+    "epoch_sec": 2.5996904373168945,
+    "benchmark": null
+  },
+  {
+    "epoch": 9,
+    "train_loss": 0.6916318021395026,
+    "val_loss": 0.7029646830024007,
+    "val_top1": 56.718203486726146,
+    "val_top2": 81.80838531154967,
+    "lr": 0.0015,
+    "epoch_sec": 2.636484384536743,
+    "benchmark": null
+  },
+  {
+    "epoch": 10,
+    "train_loss": 0.6890635291735331,
+    "val_loss": 0.7035292047206486,
+    "val_top1": 56.774823974210285,
+    "val_top2": 81.90336161313596,
+    "lr": 0.0015,
+    "epoch_sec": 2.668762683868408,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 20.0,
+        "wins": 4,
+        "total": 20,
+        "avg_turns": 45.45
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 45.65
+      },
+      "overall_win_rate": 10.0,
+      "total_wins": 4,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 11,
+    "train_loss": 0.6864528724856109,
+    "val_loss": 0.7033253841311018,
+    "val_top1": 56.88897818284765,
+    "val_top2": 81.90518808047416,
+    "lr": 0.0015,
+    "epoch_sec": 2.5665745735168457,
+    "benchmark": null
+  },
+  {
+    "epoch": 12,
+    "train_loss": 0.6839209114364272,
+    "val_loss": 0.7030630885997665,
+    "val_top1": 57.03144263522708,
+    "val_top2": 81.98189970867847,
+    "lr": 0.0015,
+    "epoch_sec": 2.6944313049316406,
+    "benchmark": null
+  },
+  {
+    "epoch": 13,
+    "train_loss": 0.681680810431836,
+    "val_loss": 0.703465846097358,
+    "val_top1": 56.91728842658971,
+    "val_top2": 81.85404699500461,
+    "lr": 0.0015,
+    "epoch_sec": 2.677716016769409,
+    "benchmark": null
+  },
+  {
+    "epoch": 14,
+    "train_loss": 0.679614006292702,
+    "val_loss": 0.7028135295226196,
+    "val_top1": 56.863407640112875,
+    "val_top2": 81.94080419356901,
+    "lr": 0.0015,
+    "epoch_sec": 2.5797133445739746,
+    "benchmark": null
+  },
+  {
+    "epoch": 15,
+    "train_loss": 0.6781183360236707,
+    "val_loss": 0.7054361199664179,
+    "val_top1": 56.516378845855286,
+    "val_top2": 81.78829417082949,
+    "lr": 0.0015,
+    "epoch_sec": 2.7019171714782715,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 25.0,
+        "wins": 5,
+        "total": 20,
+        "avg_turns": 37.3
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 49.05
+      },
+      "overall_win_rate": 12.5,
+      "total_wins": 5,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 16,
+    "train_loss": 0.6759627889288534,
+    "val_loss": 0.704355715034164,
+    "val_top1": 56.7620387028429,
+    "val_top2": 81.8695719673793,
+    "lr": 0.0015,
+    "epoch_sec": 2.8780622482299805,
+    "benchmark": null
+  },
+  {
+    "epoch": 17,
+    "train_loss": 0.673724216891594,
+    "val_loss": 0.7061047960664625,
+    "val_top1": 56.877106145149355,
+    "val_top2": 81.88783664076126,
+    "lr": 0.0015,
+    "epoch_sec": 2.698650598526001,
+    "benchmark": null
+  },
+  {
+    "epoch": 18,
+    "train_loss": 0.6724573914760804,
+    "val_loss": 0.7050974586299646,
+    "val_top1": 56.692632943991384,
+    "val_top2": 81.81386471356426,
+    "lr": 0.0015,
+    "epoch_sec": 2.7025890350341797,
+    "benchmark": null
+  },
+  {
+    "epoch": 19,
+    "train_loss": 0.6651233774010498,
+    "val_loss": 0.7065731994459562,
+    "val_top1": 56.612268381110674,
+    "val_top2": 81.85678669601191,
+    "lr": 0.00075,
+    "epoch_sec": 2.6100821495056152,
+    "benchmark": null
+  },
+  {
+    "epoch": 20,
+    "train_loss": 0.6632099107350453,
+    "val_loss": 0.7078987811213342,
+    "val_top1": 56.61500808211797,
+    "val_top2": 81.83943525629903,
+    "lr": 0.00075,
+    "epoch_sec": 2.5101492404937744,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 20.0,
+        "wins": 4,
+        "total": 20,
+        "avg_turns": 42.6
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 46.1
+      },
+      "overall_win_rate": 10.0,
+      "total_wins": 4,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 21,
+    "train_loss": 0.6619201147123532,
+    "val_loss": 0.7069697781143901,
+    "val_top1": 56.647884494205535,
+    "val_top2": 81.79833974118958,
+    "lr": 0.00075,
+    "epoch_sec": 2.6467936038970947,
+    "benchmark": null
+  },
+  {
+    "epoch": 22,
+    "train_loss": 0.6609886072256385,
+    "val_loss": 0.7091649447646097,
+    "val_top1": 56.69811234600597,
+    "val_top2": 81.90701454781235,
+    "lr": 0.00075,
+    "epoch_sec": 2.7875945568084717,
+    "benchmark": null
+  },
+  {
+    "epoch": 23,
+    "train_loss": 0.6600471315014087,
+    "val_loss": 0.7092416921508646,
+    "val_top1": 56.56204052931023,
+    "val_top2": 81.83030291960804,
+    "lr": 0.00075,
+    "epoch_sec": 2.763042449951172,
+    "benchmark": null
+  },
+  {
+    "epoch": 24,
+    "train_loss": 0.6587717513440072,
+    "val_loss": 0.7100475441629641,
+    "val_top1": 56.54742879060465,
+    "val_top2": 81.76728979644021,
+    "lr": 0.00075,
+    "epoch_sec": 2.5253360271453857,
+    "benchmark": null
+  },
+  {
+    "epoch": 25,
+    "train_loss": 0.6546960546828733,
+    "val_loss": 0.7105858030720292,
+    "val_top1": 56.57665226801581,
+    "val_top2": 81.8704852010484,
+    "lr": 0.000375,
+    "epoch_sec": 2.40897536277771,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 30.0,
+        "wins": 6,
+        "total": 20,
+        "avg_turns": 46.55
+      },
+      "random": {
+        "win_rate": 15.0,
+        "wins": 3,
+        "total": 20,
+        "avg_turns": 46.15
+      },
+      "overall_win_rate": 22.5,
+      "total_wins": 9,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 26,
+    "train_loss": 0.653627222225611,
+    "val_loss": 0.7115784114766344,
+    "val_top1": 56.45427895635656,
+    "val_top2": 81.73532661802176,
+    "lr": 0.000375,
+    "epoch_sec": 2.697953462600708,
+    "benchmark": null
+  },
+  {
+    "epoch": 27,
+    "train_loss": 0.6529230486245046,
+    "val_loss": 0.7115196619078378,
+    "val_top1": 56.52277148153898,
+    "val_top2": 81.73623985169085,
+    "lr": 0.000375,
+    "epoch_sec": 2.8855366706848145,
+    "benchmark": null
+  },
+  {
+    "epoch": 28,
+    "train_loss": 0.6524452137278252,
+    "val_loss": 0.713128331108628,
+    "val_top1": 56.47802303175313,
+    "val_top2": 81.78738093716039,
+    "lr": 0.000375,
+    "epoch_sec": 2.7980105876922607,
+    "benchmark": null
+  },
+  {
+    "epoch": 29,
+    "train_loss": 0.6519183135858857,
+    "val_loss": 0.7137680789020574,
+    "val_top1": 56.49446123779691,
+    "val_top2": 81.73897955269815,
+    "lr": 0.000375,
+    "epoch_sec": 2.8249471187591553,
+    "benchmark": null
+  },
+  {
+    "epoch": 30,
+    "train_loss": 0.6515639478420661,
+    "val_loss": 0.7130153736221456,
+    "val_top1": 56.55199495895015,
+    "val_top2": 81.71249577629428,
+    "lr": 0.000375,
+    "epoch_sec": 2.7452707290649414,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 45.0,
+        "wins": 9,
+        "total": 20,
+        "avg_turns": 48.7
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 47.75
+      },
+      "overall_win_rate": 22.5,
+      "total_wins": 9,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 31,
+    "train_loss": 0.6487290332026214,
+    "val_loss": 0.7147554086747571,
+    "val_top1": 56.457018657363854,
+    "val_top2": 81.63487091442087,
+    "lr": 0.0001875,
+    "epoch_sec": 2.7054872512817383,
+    "benchmark": null
+  },
+  {
+    "epoch": 32,
+    "train_loss": 0.6484820402101321,
+    "val_loss": 0.7158155424572598,
+    "val_top1": 56.49172153678962,
+    "val_top2": 81.74354572104365,
+    "lr": 0.0001875,
+    "epoch_sec": 2.6010584831237793,
+    "benchmark": null
+  },
+  {
+    "epoch": 33,
+    "train_loss": 0.6481201352656084,
+    "val_loss": 0.716097720872576,
+    "val_top1": 56.47528333074584,
+    "val_top2": 81.7015369722651,
+    "lr": 0.0001875,
+    "epoch_sec": 2.4378812313079834,
+    "benchmark": null
+  },
+  {
+    "epoch": 34,
+    "train_loss": 0.6484075464037778,
+    "val_loss": 0.7161566654098368,
+    "val_top1": 56.42688194628359,
+    "val_top2": 81.66774732650843,
+    "lr": 0.0001875,
+    "epoch_sec": 2.4539904594421387,
+    "benchmark": null
+  },
+  {
+    "epoch": 35,
+    "train_loss": 0.6475744493330272,
+    "val_loss": 0.7167494965490894,
+    "val_top1": 56.35747618743208,
+    "val_top2": 81.72619428133076,
+    "lr": 0.0001875,
+    "epoch_sec": 2.454900026321411,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 30.0,
+        "wins": 6,
+        "total": 20,
+        "avg_turns": 43.15
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 47.15
+      },
+      "overall_win_rate": 17.5,
+      "total_wins": 7,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 36,
+    "train_loss": 0.6475364475360404,
+    "val_loss": 0.7168334650102063,
+    "val_top1": 56.42596871261449,
+    "val_top2": 81.6156930073698,
+    "lr": 0.0001875,
+    "epoch_sec": 2.8854470252990723,
+    "benchmark": null
+  },
+  {
+    "epoch": 37,
+    "train_loss": 0.646124552578816,
+    "val_loss": 0.71707321048897,
+    "val_top1": 56.3346453457046,
+    "val_top2": 81.66774732650843,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.7750957012176514,
+    "benchmark": null
+  },
+  {
+    "epoch": 38,
+    "train_loss": 0.6460864023603622,
+    "val_loss": 0.7173200589474117,
+    "val_top1": 56.36295558944667,
+    "val_top2": 81.63852384909727,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.6063687801361084,
+    "benchmark": null
+  },
+  {
+    "epoch": 39,
+    "train_loss": 0.6457526477256624,
+    "val_loss": 0.7175923156961103,
+    "val_top1": 56.413183441247114,
+    "val_top2": 81.63395768075178,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.6455678939819336,
+    "benchmark": null
+  },
+  {
+    "epoch": 40,
+    "train_loss": 0.6457490610210809,
+    "val_loss": 0.7175506509353067,
+    "val_top1": 56.37391439347586,
+    "val_top2": 81.66044145715564,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.7799813747406006,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 46.2
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 45.1
+      },
+      "overall_win_rate": 2.5,
+      "total_wins": 1,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 41,
+    "train_loss": 0.6456927057146633,
+    "val_loss": 0.7172304531124151,
+    "val_top1": 56.41135697390891,
+    "val_top2": 81.64856941945736,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.738452196121216,
+    "benchmark": null
+  },
+  {
+    "epoch": 42,
+    "train_loss": 0.6455233167893816,
+    "val_loss": 0.7177242525270052,
+    "val_top1": 56.39583200153423,
+    "val_top2": 81.66135469082474,
+    "lr": 9.375e-05,
+    "epoch_sec": 2.8737289905548096,
+    "benchmark": null
+  },
+  {
+    "epoch": 43,
+    "train_loss": 0.6447094616913559,
+    "val_loss": 0.7178483783641708,
+    "val_top1": 56.38395996383595,
+    "val_top2": 81.62847827873718,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.7856898307800293,
+    "benchmark": null
+  },
+  {
+    "epoch": 44,
+    "train_loss": 0.6445993951248257,
+    "val_loss": 0.7179718947856226,
+    "val_top1": 56.39309230052694,
+    "val_top2": 81.6184327083771,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.727687358856201,
+    "benchmark": null
+  },
+  {
+    "epoch": 45,
+    "train_loss": 0.6443440112540431,
+    "val_loss": 0.7185285548183405,
+    "val_top1": 56.38852613218144,
+    "val_top2": 81.60473420334061,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.473710775375366,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 20.0,
+        "wins": 4,
+        "total": 20,
+        "avg_turns": 41.15
+      },
+      "random": {
+        "win_rate": 10.0,
+        "wins": 2,
+        "total": 20,
+        "avg_turns": 51.7
+      },
+      "overall_win_rate": 15.0,
+      "total_wins": 6,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 46,
+    "train_loss": 0.644671230721395,
+    "val_loss": 0.7183264549647537,
+    "val_top1": 56.39400553419603,
+    "val_top2": 81.62847827873718,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.676785945892334,
+    "benchmark": null
+  },
+  {
+    "epoch": 47,
+    "train_loss": 0.644391804540118,
+    "val_loss": 0.7182097936345038,
+    "val_top1": 56.33099241102821,
+    "val_top2": 81.63761061542817,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.7842774391174316,
+    "benchmark": null
+  },
+  {
+    "epoch": 48,
+    "train_loss": 0.6441187946119717,
+    "val_loss": 0.7184330949159426,
+    "val_top1": 56.36752175779217,
+    "val_top2": 81.58646952995863,
+    "lr": 4.6875e-05,
+    "epoch_sec": 2.468906879425049,
+    "benchmark": null
+  },
+  {
+    "epoch": 49,
+    "train_loss": 0.6436285682440591,
+    "val_loss": 0.71867296851684,
+    "val_top1": 56.352910019086586,
+    "val_top2": 81.63669738175908,
+    "lr": 2.34375e-05,
+    "epoch_sec": 2.7729060649871826,
+    "benchmark": null
+  },
+  {
+    "epoch": 50,
+    "train_loss": 0.6437035078066017,
+    "val_loss": 0.7187172102036877,
+    "val_top1": 56.36021588843938,
+    "val_top2": 81.62847827873718,
+    "lr": 2.34375e-05,
+    "epoch_sec": 2.9029576778411865,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 30.0,
+        "wins": 6,
+        "total": 20,
+        "avg_turns": 49.4
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 46.95
+      },
+      "overall_win_rate": 17.5,
+      "total_wins": 7,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 51,
+    "train_loss": 0.6435442594411743,
+    "val_loss": 0.7189091694689242,
+    "val_top1": 56.37482762714495,
+    "val_top2": 81.63669738175908,
+    "lr": 2.34375e-05,
+    "epoch_sec": 3.0560808181762695,
+    "benchmark": null
+  },
+  {
+    "epoch": 52,
+    "train_loss": 0.6436053118099867,
+    "val_loss": 0.7186363300430441,
+    "val_top1": 56.36478205678487,
+    "val_top2": 81.59834156765692,
+    "lr": 2.34375e-05,
+    "epoch_sec": 2.872936725616455,
+    "benchmark": null
+  },
+  {
+    "epoch": 53,
+    "train_loss": 0.6436720799298177,
+    "val_loss": 0.7186964293506658,
+    "val_top1": 56.3465173834029,
+    "val_top2": 81.63578414808997,
+    "lr": 2.34375e-05,
+    "epoch_sec": 2.482990026473999,
+    "benchmark": null
+  },
+  {
+    "epoch": 54,
+    "train_loss": 0.6438454531206943,
+    "val_loss": 0.7187243817008544,
+    "val_top1": 56.35747618743208,
+    "val_top2": 81.59834156765692,
+    "lr": 2.34375e-05,
+    "epoch_sec": 2.5051164627075195,
+    "benchmark": null
+  },
+  {
+    "epoch": 55,
+    "train_loss": 0.6431318837227208,
+    "val_loss": 0.7189117190993835,
+    "val_top1": 56.35108355174838,
+    "val_top2": 81.6093003716861,
+    "lr": 1.171875e-05,
+    "epoch_sec": 2.4226903915405273,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 20.0,
+        "wins": 4,
+        "total": 20,
+        "avg_turns": 42.2
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 50.7
+      },
+      "overall_win_rate": 12.5,
+      "total_wins": 5,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 56,
+    "train_loss": 0.6438895053792708,
+    "val_loss": 0.7189183463560087,
+    "val_top1": 56.35564972009388,
+    "val_top2": 81.6156930073698,
+    "lr": 1.171875e-05,
+    "epoch_sec": 2.689366102218628,
+    "benchmark": null
+  },
+  {
+    "epoch": 57,
+    "train_loss": 0.6434667939596838,
+    "val_loss": 0.7189903654784799,
+    "val_top1": 56.35108355174838,
+    "val_top2": 81.63487091442087,
+    "lr": 1.171875e-05,
+    "epoch_sec": 3.0538275241851807,
+    "benchmark": null
+  },
+  {
+    "epoch": 58,
+    "train_loss": 0.6433113552752895,
+    "val_loss": 0.7189591649536774,
+    "val_top1": 56.344690916064685,
+    "val_top2": 81.62117240938439,
+    "lr": 1.171875e-05,
+    "epoch_sec": 2.7621138095855713,
+    "benchmark": null
+  },
+  {
+    "epoch": 59,
+    "train_loss": 0.6435812094030601,
+    "val_loss": 0.7189869886246797,
+    "val_top1": 56.339211514050106,
+    "val_top2": 81.62665181139899,
+    "lr": 1.171875e-05,
+    "epoch_sec": 2.6571402549743652,
+    "benchmark": null
+  },
+  {
+    "epoch": 60,
+    "train_loss": 0.6431804927858976,
+    "val_loss": 0.7190751461225136,
+    "val_top1": 56.32825271002091,
+    "val_top2": 81.6102136053552,
+    "lr": 1.171875e-05,
+    "epoch_sec": 2.6830267906188965,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 35.0,
+        "wins": 7,
+        "total": 20,
+        "avg_turns": 49.65
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 53.4
+      },
+      "overall_win_rate": 17.5,
+      "total_wins": 7,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 61,
+    "train_loss": 0.6437311816726974,
+    "val_loss": 0.7191281340946661,
+    "val_top1": 56.3410379813883,
+    "val_top2": 81.62117240938439,
+    "lr": 1e-05,
+    "epoch_sec": 2.8026950359344482,
+    "benchmark": null
+  },
+  {
+    "epoch": 62,
+    "train_loss": 0.6434471525571527,
+    "val_loss": 0.7190857117421159,
+    "val_top1": 56.32459977534452,
+    "val_top2": 81.6129533063625,
+    "lr": 1e-05,
+    "epoch_sec": 2.8207907676696777,
+    "benchmark": null
+  },
+  {
+    "epoch": 63,
+    "train_loss": 0.6431218051280913,
+    "val_loss": 0.7191336400040956,
+    "val_top1": 56.32094684066812,
+    "val_top2": 81.60838713801701,
+    "lr": 1e-05,
+    "epoch_sec": 2.8049354553222656,
+    "benchmark": null
+  },
+  {
+    "epoch": 64,
+    "train_loss": 0.6435125020667665,
+    "val_loss": 0.7191829425152217,
+    "val_top1": 56.338298280381004,
+    "val_top2": 81.62665181139899,
+    "lr": 1e-05,
+    "epoch_sec": 2.632430076599121,
+    "benchmark": null
+  },
+  {
+    "epoch": 65,
+    "train_loss": 0.6432621693453773,
+    "val_loss": 0.7191501844709165,
+    "val_top1": 56.32094684066812,
+    "val_top2": 81.6184327083771,
+    "lr": 1e-05,
+    "epoch_sec": 2.5481479167938232,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 15.0,
+        "wins": 3,
+        "total": 20,
+        "avg_turns": 45.3
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 46.25
+      },
+      "overall_win_rate": 7.5,
+      "total_wins": 3,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 66,
+    "train_loss": 0.64323691163126,
+    "val_loss": 0.7191392161021722,
+    "val_top1": 56.3364718130428,
+    "val_top2": 81.62482534406078,
+    "lr": 1e-05,
+    "epoch_sec": 2.626749277114868,
+    "benchmark": null
+  },
+  {
+    "epoch": 67,
+    "train_loss": 0.6432496604352894,
+    "val_loss": 0.7193092620261362,
+    "val_top1": 56.35382325275569,
+    "val_top2": 81.63304444708267,
+    "lr": 1e-05,
+    "epoch_sec": 2.7994730472564697,
+    "benchmark": null
+  },
+  {
+    "epoch": 68,
+    "train_loss": 0.6433687937928505,
+    "val_loss": 0.7192806027760016,
+    "val_top1": 56.3364718130428,
+    "val_top2": 81.61751947470799,
+    "lr": 1e-05,
+    "epoch_sec": 2.616537570953369,
+    "benchmark": null
+  },
+  {
+    "epoch": 69,
+    "train_loss": 0.6431162464539997,
+    "val_loss": 0.7191673667631416,
+    "val_top1": 56.31912037332992,
+    "val_top2": 81.60016803499511,
+    "lr": 1e-05,
+    "epoch_sec": 2.4122886657714844,
+    "benchmark": null
+  },
+  {
+    "epoch": 70,
+    "train_loss": 0.64283819049105,
+    "val_loss": 0.7192976892551529,
+    "val_top1": 56.322773308006326,
+    "val_top2": 81.60108126866422,
+    "lr": 1e-05,
+    "epoch_sec": 2.535418748855591,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 10.0,
+        "wins": 2,
+        "total": 20,
+        "avg_turns": 38.1
+      },
+      "random": {
+        "win_rate": 0.0,
+        "wins": 0,
+        "total": 20,
+        "avg_turns": 48.25
+      },
+      "overall_win_rate": 5.0,
+      "total_wins": 2,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 71,
+    "train_loss": 0.6432786150143879,
+    "val_loss": 0.7193813947873695,
+    "val_top1": 56.36112912210848,
+    "val_top2": 81.61751947470799,
+    "lr": 1e-05,
+    "epoch_sec": 2.8253254890441895,
+    "benchmark": null
+  },
+  {
+    "epoch": 72,
+    "train_loss": 0.6431175550021747,
+    "val_loss": 0.7193130616829774,
+    "val_top1": 56.32916594369001,
+    "val_top2": 81.6138665400316,
+    "lr": 1e-05,
+    "epoch_sec": 2.9811511039733887,
+    "benchmark": null
+  },
+  {
+    "epoch": 73,
+    "train_loss": 0.6432412726060786,
+    "val_loss": 0.7193380917344138,
+    "val_top1": 56.3355585793737,
+    "val_top2": 81.62208564305348,
+    "lr": 1e-05,
+    "epoch_sec": 2.98503041267395,
+    "benchmark": null
+  },
+  {
+    "epoch": 74,
+    "train_loss": 0.6435132039458838,
+    "val_loss": 0.7192595840614533,
+    "val_top1": 56.33007917735912,
+    "val_top2": 81.6129533063625,
+    "lr": 1e-05,
+    "epoch_sec": 2.9408700466156006,
+    "benchmark": null
+  },
+  {
+    "epoch": 75,
+    "train_loss": 0.6430901777822979,
+    "val_loss": 0.7192737176039509,
+    "val_top1": 56.32094684066812,
+    "val_top2": 81.60838713801701,
+    "lr": 1e-05,
+    "epoch_sec": 2.55802059173584,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 10.0,
+        "wins": 2,
+        "total": 20,
+        "avg_turns": 42.3
+      },
+      "random": {
+        "win_rate": 10.0,
+        "wins": 2,
+        "total": 20,
+        "avg_turns": 49.0
+      },
+      "overall_win_rate": 10.0,
+      "total_wins": 4,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 76,
+    "train_loss": 0.643116542215001,
+    "val_loss": 0.7193248906982279,
+    "val_top1": 56.32094684066812,
+    "val_top2": 81.60473420334061,
+    "lr": 1e-05,
+    "epoch_sec": 2.4189889430999756,
+    "benchmark": null
+  },
+  {
+    "epoch": 77,
+    "train_loss": 0.6431853663016467,
+    "val_loss": 0.7193569407284817,
+    "val_top1": 56.333732112035506,
+    "val_top2": 81.60016803499511,
+    "lr": 1e-05,
+    "epoch_sec": 2.861607074737549,
+    "benchmark": null
+  },
+  {
+    "epoch": 78,
+    "train_loss": 0.6429330199071677,
+    "val_loss": 0.7194897849983144,
+    "val_top1": 56.33190564469731,
+    "val_top2": 81.62025917571529,
+    "lr": 1e-05,
+    "epoch_sec": 2.8917784690856934,
+    "benchmark": null
+  },
+  {
+    "epoch": 79,
+    "train_loss": 0.6430144283441034,
+    "val_loss": 0.719395033109968,
+    "val_top1": 56.3401247477192,
+    "val_top2": 81.59742833398782,
+    "lr": 1e-05,
+    "epoch_sec": 2.575165271759033,
+    "benchmark": null
+  },
+  {
+    "epoch": 80,
+    "train_loss": 0.6431077269240968,
+    "val_loss": 0.7193866216133689,
+    "val_top1": 56.34743061707199,
+    "val_top2": 81.58555629628952,
+    "lr": 1e-05,
+    "epoch_sec": 2.5090582370758057,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 25.0,
+        "wins": 5,
+        "total": 20,
+        "avg_turns": 42.35
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 43.15
+      },
+      "overall_win_rate": 15.0,
+      "total_wins": 6,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 81,
+    "train_loss": 0.6432939166873202,
+    "val_loss": 0.7193720435427728,
+    "val_top1": 56.32916594369001,
+    "val_top2": 81.59742833398782,
+    "lr": 1e-05,
+    "epoch_sec": 2.5739338397979736,
+    "benchmark": null
+  },
+  {
+    "epoch": 82,
+    "train_loss": 0.6432359888411985,
+    "val_loss": 0.7194447305714973,
+    "val_top1": 56.32003360699902,
+    "val_top2": 81.59834156765692,
+    "lr": 1e-05,
+    "epoch_sec": 2.7307071685791016,
+    "benchmark": null
+  },
+  {
+    "epoch": 83,
+    "train_loss": 0.6434367079742671,
+    "val_loss": 0.719367215566546,
+    "val_top1": 56.31912037332992,
+    "val_top2": 81.59286216564232,
+    "lr": 1e-05,
+    "epoch_sec": 2.8015530109405518,
+    "benchmark": null
+  },
+  {
+    "epoch": 84,
+    "train_loss": 0.6433048252225315,
+    "val_loss": 0.7193828977157022,
+    "val_top1": 56.33007917735912,
+    "val_top2": 81.6156930073698,
+    "lr": 1e-05,
+    "epoch_sec": 2.880094051361084,
+    "benchmark": null
+  },
+  {
+    "epoch": 85,
+    "train_loss": 0.6429063683689231,
+    "val_loss": 0.7194748687966962,
+    "val_top1": 56.32825271002091,
+    "val_top2": 81.6193459420462,
+    "lr": 1e-05,
+    "epoch_sec": 2.8532211780548096,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 30.0,
+        "wins": 6,
+        "total": 20,
+        "avg_turns": 42.1
+      },
+      "random": {
+        "win_rate": 10.0,
+        "wins": 2,
+        "total": 20,
+        "avg_turns": 50.9
+      },
+      "overall_win_rate": 20.0,
+      "total_wins": 8,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 86,
+    "train_loss": 0.6430355299620738,
+    "val_loss": 0.7195944646808589,
+    "val_top1": 56.344690916064685,
+    "val_top2": 81.60016803499511,
+    "lr": 1e-05,
+    "epoch_sec": 2.6658596992492676,
+    "benchmark": null
+  },
+  {
+    "epoch": 87,
+    "train_loss": 0.6428768737087942,
+    "val_loss": 0.7195856949993383,
+    "val_top1": 56.3346453457046,
+    "val_top2": 81.60382096967152,
+    "lr": 1e-05,
+    "epoch_sec": 2.7872350215911865,
+    "benchmark": null
+  },
+  {
+    "epoch": 88,
+    "train_loss": 0.6429570731353444,
+    "val_loss": 0.7195448931132522,
+    "val_top1": 56.342864448726495,
+    "val_top2": 81.6102136053552,
+    "lr": 1e-05,
+    "epoch_sec": 2.8775763511657715,
+    "benchmark": null
+  },
+  {
+    "epoch": 89,
+    "train_loss": 0.643050868617426,
+    "val_loss": 0.7195800125041855,
+    "val_top1": 56.34925708441018,
+    "val_top2": 81.59925480132601,
+    "lr": 1e-05,
+    "epoch_sec": 2.606710910797119,
+    "benchmark": null
+  },
+  {
+    "epoch": 90,
+    "train_loss": 0.643212494578692,
+    "val_loss": 0.7195952061180756,
+    "val_top1": 56.345604149733795,
+    "val_top2": 81.59925480132601,
+    "lr": 1e-05,
+    "epoch_sec": 2.3941240310668945,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 25.0,
+        "wins": 5,
+        "total": 20,
+        "avg_turns": 47.45
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 47.6
+      },
+      "overall_win_rate": 15.0,
+      "total_wins": 6,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 91,
+    "train_loss": 0.6430303541937283,
+    "val_loss": 0.7195409826029127,
+    "val_top1": 56.34743061707199,
+    "val_top2": 81.6074739043479,
+    "lr": 1e-05,
+    "epoch_sec": 2.6542155742645264,
+    "benchmark": null
+  },
+  {
+    "epoch": 92,
+    "train_loss": 0.6430581238600287,
+    "val_loss": 0.7195361880498512,
+    "val_top1": 56.333732112035506,
+    "val_top2": 81.58920923096593,
+    "lr": 1e-05,
+    "epoch_sec": 2.6303958892822266,
+    "benchmark": null
+  },
+  {
+    "epoch": 93,
+    "train_loss": 0.642750878735344,
+    "val_loss": 0.719592550647593,
+    "val_top1": 56.29994246627885,
+    "val_top2": 81.59377539931143,
+    "lr": 1e-05,
+    "epoch_sec": 2.78483247756958,
+    "benchmark": null
+  },
+  {
+    "epoch": 94,
+    "train_loss": 0.6426834328339832,
+    "val_loss": 0.7196625755212017,
+    "val_top1": 56.338298280381004,
+    "val_top2": 81.59286216564232,
+    "lr": 1e-05,
+    "epoch_sec": 2.9061639308929443,
+    "benchmark": null
+  },
+  {
+    "epoch": 95,
+    "train_loss": 0.6425745786219934,
+    "val_loss": 0.7197378439323925,
+    "val_top1": 56.31638067232263,
+    "val_top2": 81.60016803499511,
+    "lr": 1e-05,
+    "epoch_sec": 2.8337554931640625,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 40.0,
+        "wins": 8,
+        "total": 20,
+        "avg_turns": 52.75
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 43.1
+      },
+      "overall_win_rate": 22.5,
+      "total_wins": 9,
+      "total_games": 40
+    }
+  },
+  {
+    "epoch": 96,
+    "train_loss": 0.6428100342797761,
+    "val_loss": 0.7197291221574088,
+    "val_top1": 56.31181450397713,
+    "val_top2": 81.61477977370069,
+    "lr": 1e-05,
+    "epoch_sec": 2.7332775592803955,
+    "benchmark": null
+  },
+  {
+    "epoch": 97,
+    "train_loss": 0.6425615179263325,
+    "val_loss": 0.7197915889392389,
+    "val_top1": 56.326426242682714,
+    "val_top2": 81.6074739043479,
+    "lr": 1e-05,
+    "epoch_sec": 2.3962202072143555,
+    "benchmark": null
+  },
+  {
+    "epoch": 98,
+    "train_loss": 0.6426941777023152,
+    "val_loss": 0.7198191792051368,
+    "val_top1": 56.34743061707199,
+    "val_top2": 81.60473420334061,
+    "lr": 1e-05,
+    "epoch_sec": 2.8745346069335938,
+    "benchmark": null
+  },
+  {
+    "epoch": 99,
+    "train_loss": 0.6430114656194995,
+    "val_loss": 0.719822195088752,
+    "val_top1": 56.338298280381004,
+    "val_top2": 81.60382096967152,
+    "lr": 1e-05,
+    "epoch_sec": 2.8313913345336914,
+    "benchmark": null
+  },
+  {
+    "epoch": 100,
+    "train_loss": 0.642688104323428,
+    "val_loss": 0.7198280731094218,
+    "val_top1": 56.34195121505739,
+    "val_top2": 81.61112683902431,
+    "lr": 1e-05,
+    "epoch_sec": 2.371124505996704,
+    "benchmark": {
+      "max_damage": {
+        "win_rate": 15.0,
+        "wins": 3,
+        "total": 20,
+        "avg_turns": 43.9
+      },
+      "random": {
+        "win_rate": 5.0,
+        "wins": 1,
+        "total": 20,
+        "avg_turns": 51.15
+      },
+      "overall_win_rate": 10.0,
+      "total_wins": 4,
+      "total_games": 40
+    }
+  }
+]

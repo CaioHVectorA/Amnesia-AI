@@ -1,0 +1,161 @@
+{
+  "format": "gen8ou_selfplay_league",
+  "start_time": "2026-10-09T15:02:50.507237",
+  "updates": [
+    {
+      "update_id": 1,
+      "timestamp": "2026-10-09T15:03:05.269552",
+      "transitions": 2509,
+      "duration_seconds": 9.42,
+      "actor_loss": -0.0077,
+      "critic_loss": 1.3582,
+      "entropy": 1.9966
+    },
+    {
+      "update_id": 2,
+      "timestamp": "2026-10-09T15:03:13.669674",
+      "transitions": 2502,
+      "duration_seconds": 8.4,
+      "actor_loss": -0.0071,
+      "critic_loss": 1.3676,
+      "entropy": 1.9872
+    },
+    {
+      "update_id": 3,
+      "timestamp": "2026-10-09T15:03:21.539692",
+      "transitions": 2507,
+      "duration_seconds": 7.87,
+      "actor_loss": -0.0067,
+      "critic_loss": 2.6085,
+      "entropy": 1.9606
+    },
+    {
+      "update_id": 4,
+      "timestamp": "2026-10-09T15:03:29.001273",
+      "transitions": 2546,
+      "duration_seconds": 7.46,
+      "actor_loss": -0.0053,
+      "critic_loss": 3.1712,
+      "entropy": 1.893
+    },
+    {
+      "update_id": 5,
+      "timestamp": "2026-10-09T15:03:37.059226",
+      "transitions": 2505,
+      "duration_seconds": 8.06,
+      "actor_loss": -0.0058,
+      "critic_loss": 3.6662,
+      "entropy": 1.8991
+    },
+    {
+      "update_id": 6,
+      "timestamp": "2026-10-09T15:03:43.973023",
+      "transitions": 2501,
+      "duration_seconds": 6.91,
+      "actor_loss": -0.006,
+      "critic_loss": 4.3826,
+      "entropy": 1.8332
+    },
+    {
+      "update_id": 7,
+      "timestamp": "2026-10-09T15:03:51.463484",
+      "transitions": 2511,
+      "duration_seconds": 7.49,
+      "actor_loss": -0.0062,
+      "critic_loss": 4.7377,
+      "entropy": 1.7872
+    },
+    {
+      "update_id": 8,
+      "timestamp": "2026-10-09T15:03:58.855371",
+      "transitions": 2504,
+      "duration_seconds": 7.39,
+      "actor_loss": -0.0059,
+      "critic_loss": 4.9766,
+      "entropy": 1.7165
+    },
+    {
+      "update_id": 9,
+      "timestamp": "2026-10-09T15:04:07.859779",
+      "transitions": 2547,
+      "duration_seconds": 9.0,
+      "actor_loss": -0.0056,
+      "critic_loss": 4.9697,
+      "entropy": 1.6485
+    },
+    {
+      "update_id": 10,
+      "timestamp": "2026-10-09T15:04:14.704109",
+      "transitions": 2502,
+      "duration_seconds": 6.84,
+      "actor_loss": -0.0056,
+      "critic_loss": 5.4863,
+      "entropy": 1.5753
+    },
+    {
+      "update_id": 11,
+      "timestamp": "2026-10-09T15:04:24.631132",
+      "transitions": 2528,
+      "duration_seconds": 9.93,
+      "actor_loss": -0.0044,
+      "critic_loss": 5.918,
+      "entropy": 1.483
+    },
+    {
+      "update_id": 12,
+      "timestamp": "2026-10-09T15:04:31.128754",
+      "transitions": 2510,
+      "duration_seconds": 6.5,
+      "actor_loss": -0.0045,
+      "critic_loss": 6.2615,
+      "entropy": 1.4086
+    },
+    {
+      "update_id": 13,
+      "timestamp": "2026-10-09T15:04:38.838006",
+      "transitions": 2510,
+      "duration_seconds": 7.71,
+      "actor_loss": -0.0035,
+      "critic_loss": 6.532,
+      "entropy": 1.3299
+    },
+    {
+      "update_id": 14,
+      "timestamp": "2026-10-09T15:04:50.044884",
+      "transitions": 2500,
+      "duration_seconds": 11.21,
+      "actor_loss": -0.0038,
+      "critic_loss": 6.8368,
+      "entropy": 1.2629
+    },
+    {
+      "update_id": 15,
+      "timestamp": "2026-10-09T15:04:59.809547",
+      "transitions": 2509,
+      "duration_seconds": 9.76,
+      "actor_loss": -0.0026,
+      "critic_loss": 6.9602,
+      "entropy": 1.2072
+    }
+  ],
+  "benchmark_evals": [
+    {
+      "vs_MaxDamage": 0.0,
+      "vs_Random": 0.0,
+      "vs_SelfPlay_Past": 0.0,
+      "overall_win_rate": 0.0,
+      "update_id": 0,
+      "total_transitions": 0,
+      "timestamp": "2026-10-09T15:02:55.186445"
+    },
+    {
+      "vs_MaxDamage": 53.333333333333336,
+      "vs_Random": 100.0,
+      "vs_SelfPlay_Past": 96.66666666666667,
+      "overall_win_rate": 83.33333333333334,
+      "update_id": 15,
+      "total_transitions": 37691,
+      "timestamp": "2026-10-09T15:05:02.782677"
+    }
+  ]
+}

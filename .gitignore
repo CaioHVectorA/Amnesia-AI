@@ -10,3 +10,5 @@ external/pokemon-showdown/node_modules/
 external/pokemon-showdown/dist/
 external/**/target/
 external/**/__pycache__/
+*cache.pt
+projects/behavioral-cloning/weights/bc_model_epoch_*.pt

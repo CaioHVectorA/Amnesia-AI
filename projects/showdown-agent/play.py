@@ -21,8 +21,8 @@ def main():
     parser.add_argument("--challenge", type=str, default=None, help="Target username to challenge automatically (Recommended!)")
     parser.add_argument("--username", type=str, default=f"AmnesiaAI_{random.randint(100, 999)}", help="Showdown username")
     parser.add_argument("--password", type=str, default=None, help="Password (optional for registered accounts)")
-    parser.add_argument("--format", type=str, default="gen9randombattle", help="Battle format (default: gen9randombattle)")
-    parser.add_argument("--checkpoint", type=str, default="projects/behavioral-cloning/weights/bc_model.pt", help="Path to trained model weights")
+    parser.add_argument("--format", type=str, default="gen8ou", help="Battle format (default: gen8ou, e.g. gen8ou, gen8randombattle, gen9randombattle)")
+    parser.add_argument("--checkpoint", type=str, default="projects/reinforcement-learning/weights/gen8ou_ppo.pt", help="Path to trained model weights")
     parser.add_argument("--avatar", type=str, default="red", help="Showdown avatar name")
 
     args = parser.parse_args()

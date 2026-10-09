@@ -39,38 +39,41 @@ from parser import (
 
 
 class ShowdownBCAgent:
-    def __init__(self, checkpoint_path: Optional[str] = None):
+    def __init__(self, checkpoint_path: Optional[str] = None, model: Optional[torch.nn.Module] = None):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        
-        if not checkpoint_path:
-            possible_paths = [
-                "projects/behavioral-cloning/weights/bc_model.pt",
-                "../behavioral-cloning/weights/bc_model.pt",
-                os.path.join(os.path.dirname(__file__), "../behavioral-cloning/weights/bc_model.pt")
-            ]
-            for p in possible_paths:
-                if os.path.exists(p):
-                    checkpoint_path = p
-                    break
-            if not checkpoint_path:
-                checkpoint_path = "projects/behavioral-cloning/weights/bc_model.pt"
-
-        self.checkpoint_path = checkpoint_path
         self.data = ShowdownData.get()
-
-        self.model = ActionScoringPolicyNet(
-            state_dim=STATE_DIM,
-            action_dim=ACTION_DIM,
-            hidden_dim=128,
-            num_actions=NUM_ACTION_SLOTS
-        ).to(self.device)
-
-        if os.path.exists(checkpoint_path):
-            checkpoint = torch.load(checkpoint_path, map_location=self.device)
-            self.model.load_state_dict(checkpoint["model_state_dict"])
-            print(f"[+] Loaded BC Model: {checkpoint_path} (Val Acc: {checkpoint.get('val_top1_acc', 0):.2f}%)")
+        
+        if model is not None:
+            self.model = model
+            self.checkpoint_path = checkpoint_path or "in-memory"
         else:
-            print(f"[-] Warning: Checkpoint not found at {checkpoint_path}.")
+            if not checkpoint_path:
+                possible_paths = [
+                    "projects/behavioral-cloning/weights/bc_model.pt",
+                    "../behavioral-cloning/weights/bc_model.pt",
+                    os.path.join(os.path.dirname(__file__), "../behavioral-cloning/weights/bc_model.pt")
+                ]
+                for p in possible_paths:
+                    if os.path.exists(p):
+                        checkpoint_path = p
+                        break
+                if not checkpoint_path:
+                    checkpoint_path = "projects/behavioral-cloning/weights/bc_model.pt"
+
+            self.checkpoint_path = checkpoint_path
+            self.model = ActionScoringPolicyNet(
+                state_dim=STATE_DIM,
+                action_dim=ACTION_DIM,
+                hidden_dim=128,
+                num_actions=NUM_ACTION_SLOTS
+            ).to(self.device)
+
+            if os.path.exists(checkpoint_path):
+                checkpoint = torch.load(checkpoint_path, map_location=self.device)
+                self.model.load_state_dict(checkpoint["model_state_dict"])
+                print(f"[+] Loaded BC Model: {checkpoint_path} (Val Acc: {checkpoint.get('val_top1_acc', 0):.2f}%)")
+            else:
+                print(f"[-] Warning: Checkpoint not found at {checkpoint_path}.")
 
         self.model.eval()
 
