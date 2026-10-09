@@ -1,19 +1,47 @@
-# Amnesia AI
+# Amnesia-AI v2
 
-Amnesia AI é uma iniciativa de pesquisa e desenvolvimento que tem como objetivo criar um agente autônomo de inteligência artificial capaz de jogar Pokémon Competitivo em alto nível (visando Top 500 no ranking de Pokémon Showdown).
+Amnesia-AI v2 é um agente autônomo de inteligência artificial de alta performance para Pokémon Showdown, baseado no artigo seminal da conferência IEEE CoG:
 
-## 📚 Documentação do Projeto
+> **"A Self-Play Policy Optimization Approach to Battling Pokémon"**  
+> *Dan Huang & Scott Lee — IEEE Conference on Games (CoG 2019)*  
+> [Link para o Paper](https://www.yuzeh.com/assets/CoG-2019-Pkmn.pdf)
 
-- **[CONTEXT.md](CONTEXT.md)**: Arquitetura do sistema, modelagem do domínio do Pokémon competitivo, fluxo de dados e mapa de subprojetos.
-- **[AGENTS.md](AGENTS.md)**: Diretrizes de engenharia, padrões de código e instruções para agentes de IA que colaboram no repositório.
-- **[TODO.md](TODO.md)**: Roadmap detalhado e backlog de tarefas priorizado por fases.
-- **[project.md](project.md)**: Motivação teórica, objetivos e estudo inicial de complexidade.
+O objetivo central do projeto é alcançar **desempenho competitivo de nível mestre humano (>1600 Glicko-1 / Top Ladder)** no Pokémon Showdown exclusivamente através de **Reinforcement Learning (PPO), Generalized Advantage Estimation (GAE) e Self-Play Simétrico Puro**, sem árvores de busca (Minimax/MCTS) ou heurísticas engessadas.
 
-## 🗂️ Estrutura de Subprojetos
+---
 
-- `projects/simulator`: Motor de simulação rápida headless usando `@pkmn/sim` em TypeScript/Bun.
-- `projects/type-classifier`: Modelo de classificação e aprendizado de características de Pokémon em Python (scikit-learn).
-- `projects/matchup-calculator`: Calculador de vantagem de confrontos e matrizes de dano.
-- `projects/moveset-recomendation`: Recomendador e preditor de movesets com base em estatísticas do Smogon.
-- `projects/team-optimizer`: Otimizador e montador de times com análise de sinergia e cobertura de fraquezas.
-- `data/`: Tabelas canônicas de dados do Showdown (`dex.json`, `moves.json`).
+## 📚 Documentação Central
+
+- **[`CONTEXT.md`](CONTEXT.md)**: Fundamentação teórica completa, modelagem POMDP de batalhas simultâneas, Teoria dos Jogos e Equilíbrio de Nash, arquitetura de rede de 1.3M de parâmetros com embeddings de entidades (128-d) e post-mortem detalhado da v1.
+- **[`AGENTS.md`](AGENTS.md)**: Manual operacional e padrões de engenharia para desenvolvimento com agentes de IA, incluindo as 4 regras invioláveis do projeto.
+- **[`METAS.md`](METAS.md)**: Critérios quantitativos formais, intervalos de confiança de Wilson (95%), metas de win rate contra baselines e matriz de mitigação de anomalias.
+- **[`TODO.md`](TODO.md)**: Roadmap atômico de execução fase por fase (Fases 1 a 5).
+
+---
+
+## 🏗️ Arquitetura do Pacote (`src/`)
+
+```text
+Amnesia-AI/
+├── AGENTS.md                  # Manual de engenharia e regras de desenvolvimento
+├── CONTEXT.md                 # Teoria do jogo, POMDP, arquitetura 1.3M e post-mortem
+├── METAS.md                   # Metas estatísticas, Glicko-1 > 1600 e thresholds
+├── TODO.md                    # Roadmap atômico fase por fase
+├── requirements.txt           # Dependências mínimas essenciais
+└── src/
+    ├── __init__.py            # Raiz do pacote Amnesia-AI
+    ├── model.py               # Rede Actor-Critic com Embeddings de 128-d e Action Masking
+    ├── env.py                 # Wrapper do poke-env para extração de tensores
+    ├── train.py               # Loop de Pure Self-Play PPO (Algoritmo 1 de Huang & Lee)
+    ├── evaluate.py            # Avaliação de torneios contra Random, MaxDamage e Heuristic bots
+    └── client.py              # Cliente de ladder online no Pokémon Showdown
+```
+
+---
+
+## ⚡ Tecnologias
+
+- **Python 3.12+**
+- **PyTorch 2.6+** (CUDA 12.4 com aceleração TF32)
+- **`poke-env` 0.16+** & **`gymnasium` 1.3+**
+- **Formato Alvo**: `gen7randombattle` / `gen8randombattle` (níveis balanceados e diversidade procedural)
