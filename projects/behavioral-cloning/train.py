@@ -100,13 +100,31 @@ def train(args):
     print("=" * 65)
 
     # 1. Load Replays & Extract Samples
-    paths = load_balanced_replays(
-        args.db,
-        elite_count=args.elite_samples,
-        high_count=args.high_samples,
-        mid_count=args.mid_samples,
-        common_count=args.common_samples
-    )
+    if hasattr(args, "replay_dir") and args.replay_dir and os.path.exists(args.replay_dir):
+        paths = [
+            os.path.join(args.replay_dir, f)
+            for f in os.listdir(args.replay_dir)
+            if f.endswith(".json") or f.endswith(".json.gz")
+        ]
+        print(f"Loaded {len(paths)} replays directly from directory: {args.replay_dir}")
+    elif os.path.exists(args.db):
+        paths = load_balanced_replays(
+            args.db,
+            elite_count=args.elite_samples,
+            high_count=args.high_samples,
+            mid_count=args.mid_samples,
+            common_count=args.common_samples
+        )
+    else:
+        # Fallback to scanning data/replays
+        replay_root = "data/replays"
+        paths = []
+        for root, _, files in os.walk(replay_root):
+            for f in files:
+                if f.endswith(".json") or f.endswith(".json.gz"):
+                    paths.append(os.path.join(root, f))
+        print(f"Fallback: Discovered {len(paths)} replays under {replay_root}")
+
     samples = extract_dataset(paths, max_workers=args.workers)
 
     if not samples:
@@ -224,6 +242,7 @@ def train(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Train Behavioral Cloning Policy on Showdown Replays")
+    parser.add_argument("--replay-dir", type=str, default="", help="Directory with replay JSON files")
     parser.add_argument("--db", type=str, default="data/replays/replays_metadata.sqlite", help="Replays DB path")
     parser.add_argument("--elite-samples", type=int, default=4000, help="Number of elite replays (Elo 1800+)")
     parser.add_argument("--high-samples", type=int, default=1500, help="Number of high replays (Elo 1650-1799)")

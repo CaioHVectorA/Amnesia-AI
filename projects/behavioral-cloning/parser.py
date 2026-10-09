@@ -17,6 +17,7 @@ from mechanics import (
     ShowdownData,
     clean_id,
     estimate_damage_pct,
+    evaluate_status_move_utility,
     get_hazard_damage_pct,
     get_type_multiplier,
     TYPE_TO_IDX,
@@ -128,41 +129,76 @@ def build_candidate_actions(
 
     # 1. Moves (Slots 0..3)
     if me.active and not me.active.fainted:
+        opp_name = opp.active.name if opp.active else "Pikachu"
+        opp_poke = data.get_pokemon(opp_name) if opp.active else None
+        opp_types = opp_poke.get("types", []) if opp_poke else []
+        opp_status = bool(opp.active.status) if (opp.active and opp.active.status) else False
+        opp_hp = opp.active.current_hp if opp.active else 1.0
+
+        my_side_hazards = {
+            "stealthrock": me.hazards.get("stealthrock", 0) > 0,
+            "spikes": me.hazards.get("spikes", 0) > 0,
+            "toxicspikes": me.hazards.get("toxicspikes", 0) > 0,
+            "stickyweb": me.hazards.get("stickyweb", 0) > 0,
+        }
+        opp_side_hazards = {
+            "stealthrock": opp.hazards.get("stealthrock", 0) > 0,
+            "spikes": opp.hazards.get("spikes", 0) > 0,
+            "spikes_max": opp.hazards.get("spikes", 0) >= 3,
+            "toxicspikes": opp.hazards.get("toxicspikes", 0) > 0,
+            "toxicspikes_max": opp.hazards.get("toxicspikes", 0) >= 2,
+            "stickyweb": opp.hazards.get("stickyweb", 0) > 0,
+        }
+        opp_screens = any(opp.screens.values()) if hasattr(opp, "screens") else False
+
         for slot_idx in range(4):
             if slot_idx < len(me.active.moves):
                 m_name = me.active.moves[slot_idx]
                 m_data = data.get_move(m_name)
                 if m_data:
-                    mask[slot_idx] = 1.0
-                    matrix[slot_idx, 0] = 1.0  # is_move
-                    matrix[slot_idx, 1] = 0.0  # is_switch
-
-                    opp_name = opp.active.name if opp.active else "Pikachu"
-                    dmg = estimate_damage_pct(
-                        me.active.name,
-                        opp_name,
-                        m_name,
-                        me.active.boosts,
-                        opp.active.boosts if opp.active else {},
-                        weather=weather
-                    )
-                    matrix[slot_idx, 2] = min(2.0, dmg)
-                    matrix[slot_idx, 3] = 1.0 if (opp.active and dmg >= opp.active.current_hp) else 0.0
-
                     cat = m_data.get("category", "Status")
-                    if cat == "Physical": matrix[slot_idx, 4] = 1.0
-                    elif cat == "Special": matrix[slot_idx, 5] = 1.0
-                    else: matrix[slot_idx, 6] = 1.0
-
                     m_type = m_data.get("type", "Normal")
-                    opp_poke = data.get_pokemon(opp_name) if opp.active else None
-                    opp_types = opp_poke.get("types", []) if opp_poke else []
-                    matrix[slot_idx, 7] = get_type_multiplier(m_type, opp_types) / 4.0
-
                     my_poke = data.get_pokemon(me.active.name)
                     my_types = my_poke.get("types", []) if my_poke else []
-                    matrix[slot_idx, 8] = 1.0 if m_type in my_types else 0.67
 
+                    if cat == "Status":
+                        util = evaluate_status_move_utility(
+                            move_name=m_name,
+                            my_hp_pct=me.active.current_hp,
+                            opp_hp_pct=opp_hp,
+                            opp_species=opp_name,
+                            opp_has_status=opp_status,
+                            my_side_hazards=my_side_hazards,
+                            opp_side_hazards=opp_side_hazards,
+                            opp_screens=opp_screens
+                        )
+                        if util <= 0.0:
+                            # CRITICAL FIX: HARD MASK OUT USELESS / REDUNDANT STATUS MOVES!
+                            mask[slot_idx] = 0.0
+                            continue
+
+                        mask[slot_idx] = 1.0
+                        matrix[slot_idx, 0] = 1.0  # is_move
+                        matrix[slot_idx, 2] = util * 0.35  # Normalized utility value
+                        matrix[slot_idx, 6] = 1.0  # is_status
+                    else:
+                        mask[slot_idx] = 1.0
+                        matrix[slot_idx, 0] = 1.0  # is_move
+                        dmg = estimate_damage_pct(
+                            me.active.name,
+                            opp_name,
+                            m_name,
+                            me.active.boosts,
+                            opp.active.boosts if opp.active else {},
+                            weather=weather
+                        )
+                        matrix[slot_idx, 2] = min(2.0, dmg)
+                        matrix[slot_idx, 3] = 1.0 if (opp.active and dmg >= opp_hp and dmg > 0) else 0.0
+                        if cat == "Physical": matrix[slot_idx, 4] = 1.0
+                        elif cat == "Special": matrix[slot_idx, 5] = 1.0
+
+                    matrix[slot_idx, 7] = get_type_multiplier(m_type, opp_types) / 4.0
+                    matrix[slot_idx, 8] = 1.5 if m_type in my_types else 1.0
                     acc = m_data.get("accuracy", 100)
                     matrix[slot_idx, 9] = (acc if isinstance(acc, (int, float)) else 100) / 100.0
                     matrix[slot_idx, 10] = (m_data.get("priority", 0) + 6.0) / 12.0
@@ -180,7 +216,7 @@ def build_candidate_actions(
             mask[switch_slot] = 1.0
             matrix[switch_slot, 0] = 0.0
             matrix[switch_slot, 1] = 1.0
-            matrix[switch_slot, 2] = bench_mon.current_hp
+            matrix[switch_slot, 2] = 0.0  # CRITICAL FIX: Switches deal 0 damage!
 
             h_dmg = get_hazard_damage_pct(bench_mon.name, me.hazards, bench_mon.item)
             matrix[switch_slot, 3] = 1.0 - h_dmg
@@ -196,6 +232,7 @@ def build_candidate_actions(
             bench_spe = bench_poke.get("baseStats", {}).get("spe", 80) if bench_poke else 80
             opp_spe = opp_poke.get("baseStats", {}).get("spe", 80) if opp_poke else 80
             matrix[switch_slot, 10] = 1.0 if bench_spe > opp_spe else 0.0
+            matrix[switch_slot, 13] = bench_mon.current_hp  # Reserve HP stored in slot 13
 
     return matrix, mask
 
@@ -214,12 +251,35 @@ def parse_replay_file(file_path: str) -> List[Tuple[np.ndarray, np.ndarray, int,
     log = data.get("log", "")
     weight = data.get("weight", 1.0)
     winner_side = data.get("winner_side")
+    p1_name = data.get("p1")
+    p2_name = data.get("p2")
 
-    if not log or weight <= 0:
+    if not log:
         return []
 
-    p1 = PlayerState(name=data.get("p1", "p1"))
-    p2 = PlayerState(name=data.get("p2", "p2"))
+    lines = log.split("\n")
+
+    # Auto-extract p1, p2, and winner_side if missing
+    if not winner_side or not p1_name or not p2_name:
+        for line in lines:
+            parts = line.split("|")
+            if len(parts) >= 4 and parts[1] == "player":
+                if parts[2] == "p1" and not p1_name:
+                    p1_name = parts[3].strip()
+                elif parts[2] == "p2" and not p2_name:
+                    p2_name = parts[3].strip()
+            elif len(parts) >= 3 and parts[1] == "win":
+                win_name = parts[2].strip()
+                if p1_name and win_name.lower() == p1_name.lower():
+                    winner_side = "p1"
+                elif p2_name and win_name.lower() == p2_name.lower():
+                    winner_side = "p2"
+
+    if not winner_side:
+        return []
+
+    p1 = PlayerState(name=p1_name or "p1")
+    p2 = PlayerState(name=p2_name or "p2")
 
     weather = None
     terrain = None
@@ -227,7 +287,20 @@ def parse_replay_file(file_path: str) -> List[Tuple[np.ndarray, np.ndarray, int,
 
     samples: List[Tuple[np.ndarray, np.ndarray, int, float, np.ndarray]] = []
 
-    lines = log.split("\n")
+    # PRE-PASS: Collect all moves revealed by each player's Pokemon throughout the match
+    revealed_moves: Dict[str, Dict[str, List[str]]] = {"p1": {}, "p2": {}}
+    for line in lines:
+        parts = line.split("|")
+        if len(parts) >= 4 and parts[1] == "move":
+            ptag = parts[2][:2]
+            spec = clean_id(parts[2].split(":")[-1])
+            m = parts[3].strip()
+            if ptag in revealed_moves:
+                if spec not in revealed_moves[ptag]:
+                    revealed_moves[ptag][spec] = []
+                if m not in revealed_moves[ptag][spec]:
+                    revealed_moves[ptag][spec].append(m)
+
     for line in lines:
         parts = line.split("|")
         if len(parts) < 2:
@@ -241,7 +314,8 @@ def parse_replay_file(file_path: str) -> List[Tuple[np.ndarray, np.ndarray, int,
         # Switch event
         elif cmd in ["switch", "drag"]:
             player_tag = parts[2][:2]
-            species = parts[3].split(",")[0].strip()
+            raw_species = parts[3].split(",")[0].strip()
+            species_clean = clean_id(raw_species)
             hp_str = parts[4].split()[0] if len(parts) > 4 else "100/100"
             hp_val = 1.0
             if "/" in hp_str:
@@ -255,15 +329,28 @@ def parse_replay_file(file_path: str) -> List[Tuple[np.ndarray, np.ndarray, int,
             if is_new_turn and target_player.active and not target_player.active.fainted and winner_side == player_tag:
                 # Find which bench slot this was
                 for b_idx, b_mon in enumerate(target_player.bench[:5]):
-                    if b_mon.name == species:
+                    if b_mon.name == raw_species:
                         switch_slot = 4 + b_idx
                         s_vec = build_state_vector(target_player, opp_player, weather, terrain)
                         a_mat, mask = build_candidate_actions(target_player, opp_player, weather)
                         if mask[switch_slot] > 0:
-                            samples.append((s_vec, a_mat, switch_slot, weight * 0.8, mask))
+                            samples.append((s_vec, a_mat, switch_slot, weight * 0.5, mask))
                         break
 
-            new_mon = BattlePokemon(name=species, species=species, current_hp=hp_val)
+            # Bench reuse or creation with pre-populated moves
+            existing_bench_mon = None
+            for idx, b_mon in enumerate(target_player.bench):
+                if b_mon.name == raw_species:
+                    existing_bench_mon = target_player.bench.pop(idx)
+                    break
+
+            if existing_bench_mon:
+                new_mon = existing_bench_mon
+                new_mon.current_hp = hp_val
+            else:
+                initial_moves = list(revealed_moves.get(player_tag, {}).get(species_clean, []))[:4]
+                new_mon = BattlePokemon(name=raw_species, species=raw_species, current_hp=hp_val, moves=initial_moves)
+
             if target_player.active:
                 target_player.bench.append(target_player.active)
             target_player.active = new_mon

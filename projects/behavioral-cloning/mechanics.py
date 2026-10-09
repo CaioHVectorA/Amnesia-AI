@@ -1,8 +1,8 @@
 """
-Pokemon Showdown Mechanics & Semantic Feature Extractor (Full Immunities)
-========================================================================
-High-speed lookup for type effectiveness, ability immunities (Levitate, Flash Fire,
-Volt Absorb, Water Absorb, Sap Sipper, etc.), and accurate Gen 9 damage calculations.
+Pokemon Showdown Mechanics & Semantic Feature Extractor (Full Immunities & Status Utility)
+========================================================================================
+High-speed lookup for type effectiveness, ability immunities, accurate damage calculations,
+and semantic move utility evaluation (Defog, Stealth Rock, Recovery, Status, Setup).
 """
 
 import json
@@ -36,7 +36,6 @@ TYPES = [
 ]
 TYPE_TO_IDX = {t.lower(): i for i, t in enumerate(TYPES)}
 
-# Common ability immunities
 ABILITY_IMMUNITIES: Dict[str, str] = {
     "levitate": "Ground",
     "flashfire": "Fire",
@@ -58,15 +57,14 @@ def clean_id(name: str) -> str:
 
 
 class ShowdownData:
-    """Loads and caches dex.json and moves.json."""
     _instance = None
 
     def __init__(self, data_dir: str = "data"):
-        dex_path = os.path.join(data_dir, "dex.json")
-        moves_path = os.path.join(data_dir, "moves.json")
-
         self.dex: Dict[str, Any] = {}
         self.moves: Dict[str, Any] = {}
+        base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
+        dex_path = os.path.join(base_dir, "dex.json")
+        moves_path = os.path.join(base_dir, "moves.json")
 
         if os.path.exists(dex_path):
             with open(dex_path, "r", encoding="utf-8") as f:
@@ -91,7 +89,6 @@ class ShowdownData:
 
 
 def get_type_multiplier(attack_type: str, defender_types: List[str]) -> float:
-    """Calculates type effectiveness multiplier against 1 or 2 defender types."""
     atk = attack_type.capitalize()
     eff = 1.0
     for d in defender_types:
@@ -102,7 +99,6 @@ def get_type_multiplier(attack_type: str, defender_types: List[str]) -> float:
 
 
 def check_ability_immunity(move_type: str, defender_abilities: Dict[str, str]) -> bool:
-    """Checks if defender has an innate ability immunity (e.g. Levitate vs Ground)."""
     for _, ab_name in defender_abilities.items():
         ab_id = clean_id(ab_name)
         if ab_id in ABILITY_IMMUNITIES and ABILITY_IMMUNITIES[ab_id] == move_type:
@@ -118,7 +114,6 @@ def estimate_damage_pct(
     defender_boosts: Dict[str, int],
     weather: Optional[str] = None
 ) -> float:
-    """Computes an approximate expected damage % factoring types, abilities, and boosts."""
     data = ShowdownData.get()
     p_atk = data.get_pokemon(attacker_name)
     p_def = data.get_pokemon(defender_name)
@@ -136,81 +131,156 @@ def estimate_damage_pct(
     def_types = p_def.get("types", [])
     def_abilities = p_def.get("abilities", {})
 
-    # Check Ability Immunity
     if check_ability_immunity(move_type, def_abilities):
         return 0.0
 
-    # Type effectiveness
-    type_eff = get_type_multiplier(move_type, def_types)
-    if type_eff == 0.0:
+    type_mult = get_type_multiplier(move_type, def_types)
+    if type_mult == 0.0:
         return 0.0
 
-    bp = m.get("basePower", 0)
-    if bp == 0:
-        bp = 80
-
-    # STAB (Same Type Attack Bonus)
     stab = 1.5 if move_type in atk_types else 1.0
+    bp = m.get("basePower", 50)
+    if bp == 0:
+        bp = 60
 
-    level = 80
-    atk_stats = p_atk.get("baseStats", {"atk": 80, "spa": 80})
-    def_stats = p_def.get("baseStats", {"hp": 80, "def": 80, "spd": 80})
+    stats_atk = p_atk.get("baseStats", {})
+    stats_def = p_def.get("baseStats", {})
 
     if category == "Physical":
-        a = atk_stats.get("atk", 80)
-        d = def_stats.get("def", 80)
+        a_stat = stats_atk.get("atk", 100)
+        d_stat = stats_def.get("def", 100)
         a_boost = attacker_boosts.get("atk", 0)
         d_boost = defender_boosts.get("def", 0)
     else:
-        a = atk_stats.get("spa", 80)
-        d = def_stats.get("spd", 80)
+        a_stat = stats_atk.get("spa", 100)
+        d_stat = stats_def.get("spd", 100)
         a_boost = attacker_boosts.get("spa", 0)
         d_boost = defender_boosts.get("spd", 0)
 
-    def get_boost_mult(stage: int) -> float:
-        if stage >= 0: return (2.0 + stage) / 2.0
-        return 2.0 / (2.0 - stage)
+    def boost_mult(b: int) -> float:
+        return (2.0 + b) / 2.0 if b >= 0 else 2.0 / (2.0 - b)
 
-    a_effective = a * get_boost_mult(a_boost)
-    d_effective = d * get_boost_mult(d_boost)
+    a_stat *= boost_mult(a_boost)
+    d_stat *= boost_mult(d_boost)
 
     weather_mult = 1.0
-    if weather == "RainDance":
-        if move_type == "Water": weather_mult = 1.5
-        elif move_type == "Fire": weather_mult = 0.5
-    elif weather == "SunnyDay":
-        if move_type == "Fire": weather_mult = 1.5
-        elif move_type == "Water": weather_mult = 0.5
+    if weather:
+        w_clean = clean_id(weather)
+        if "rain" in w_clean:
+            if move_type == "Water": weather_mult = 1.5
+            elif move_type == "Fire": weather_mult = 0.5
+        elif "sun" in w_clean:
+            if move_type == "Fire": weather_mult = 1.5
+            elif move_type == "Water": weather_mult = 0.5
 
-    base_damage = (((2.0 * level / 5.0 + 2.0) * bp * (a_effective / max(1.0, d_effective))) / 50.0) + 2.0
-    total_damage = base_damage * stab * type_eff * weather_mult
+    level = 80
+    base_dmg = (((2 * level / 5 + 2) * bp * (a_stat / max(d_stat, 1.0))) / 50 + 2)
+    final_dmg = base_dmg * stab * type_mult * weather_mult
+    def_hp = stats_def.get("hp", 100) * 2 + 140
 
-    hp_base = def_stats.get("hp", 80)
-    approx_max_hp = ((2 * hp_base + 31 + 21) * level / 100.0) + level + 10.0
-
-    return min(2.5, total_damage / max(1.0, approx_max_hp))
+    return min(2.0, (final_dmg / def_hp) * 0.92)
 
 
-def get_hazard_damage_pct(defender_name: str, hazards: Dict[str, int], item: Optional[str] = None) -> float:
+def evaluate_status_move_utility(
+    move_name: str,
+    my_hp_pct: float,
+    opp_hp_pct: float,
+    opp_species: str,
+    opp_has_status: bool,
+    my_side_hazards: Dict[str, bool],
+    opp_side_hazards: Dict[str, bool],
+    opp_screens: bool = False
+) -> float:
+    """
+    Evaluates semantic utility for status moves.
+    Returns:
+    0.0 -> Move is completely useless in current state (MUST BE MASKED OUT!)
+    > 0.0 -> Valid utility score.
+    """
+    mid = clean_id(move_name)
+    data = ShowdownData.get()
+    opp_poke = data.get_pokemon(opp_species) or {}
+    opp_types = opp_poke.get("types", [])
+
+    # 1. Defog / Hazard Clearing
+    if mid in ("defog", "rapidspin", "courtchange", "tidyup", "mortalspin"):
+        has_our_hazards = any(my_side_hazards.values())
+        if not has_our_hazards and not opp_screens:
+            return 0.0  # Useless! No hazards or screens to clear
+        return 2.5 if has_our_hazards else 1.0
+
+    # 2. Setting Entry Hazards
+    if mid in ("stealthrock", "stickyweb"):
+        if opp_side_hazards.get(mid, False):
+            return 0.0  # Already on field!
+        return 2.0
+    if mid in ("spikes", "toxicspikes"):
+        # Maximum layers reached check
+        if opp_side_hazards.get(f"{mid}_max", False):
+            return 0.0
+        return 1.8
+
+    # 3. Status Inducers
+    if mid in ("thunderwave", "glare"):
+        if opp_has_status or "Electric" in opp_types or "Ground" in opp_types:
+            return 0.0
+        return 1.8
+    if mid in ("willowisp",):
+        if opp_has_status or "Fire" in opp_types:
+            return 0.0
+        return 2.2
+    if mid in ("toxic", "poisonpowder"):
+        if opp_has_status or "Poison" in opp_types or "Steel" in opp_types:
+            return 0.0
+        return 2.0
+    if mid in ("spore", "hypnosis", "sleeppowder", "yawn", "sing"):
+        if opp_has_status or ("Grass" in opp_types and mid in ("spore", "sleeppowder")):
+            return 0.0
+        return 2.5
+
+    # 4. Recovery Moves
+    if mid in ("recover", "roost", "softboiled", "slackoff", "milkdrink", "synthesis", "moonlight", "morningsun", "wish", "shoreup"):
+        if my_hp_pct >= 0.75:
+            return 0.0  # Already healthy, do not waste turn
+        if my_hp_pct < 0.45:
+            return 3.5  # Critical healing
+        return 1.5
+
+    # 5. Setup Boosts
+    if mid in ("swordsdance", "nastyplot", "dragondance", "calmmind", "quiverdance", "bulkup", "agility"):
+        if my_hp_pct < 0.35:
+            return 0.0  # Too low HP to setup safely
+        return 1.8
+
+    # 6. Taunt
+    if mid == "taunt":
+        return 1.5
+
+    return 1.0
+
+
+def get_hazard_damage_pct(pokemon_name: str, side_hazards: Dict[str, int], item: Optional[str] = None) -> float:
+    """Estimates hazard damage percentage taken when switching in."""
     if item and clean_id(item) == "heavydutyboots":
         return 0.0
 
     data = ShowdownData.get()
-    p_def = data.get_pokemon(defender_name)
-    def_types = p_def.get("types", []) if p_def else ["Normal"]
-    def_abilities = p_def.get("abilities", {}) if p_def else {}
+    poke = data.get_pokemon(pokemon_name)
+    types = poke.get("types", []) if poke else []
+    is_airborne = "Flying" in types or (poke and poke.get("abilities", {}).get("0") == "Levitate")
 
-    damage = 0.0
-    if hazards.get("stealthrock", 0) > 0:
-        eff = get_type_multiplier("Rock", def_types)
-        damage += 0.125 * eff
+    total_dmg = 0.0
 
-    # Spikes (Grounded only - check Flying and Levitate)
-    is_grounded = ("Flying" not in def_types) and not check_ability_immunity("Ground", def_abilities)
-    if is_grounded:
-        spikes_count = hazards.get("spikes", 0)
-        if spikes_count == 1: damage += 0.125
-        elif spikes_count == 2: damage += 0.166
-        elif spikes_count >= 3: damage += 0.25
+    # Stealth Rock (Rock damage, modified by type effectiveness)
+    if side_hazards.get("stealthrock", 0) > 0:
+        rock_mult = get_type_multiplier("Rock", types)
+        total_dmg += 0.125 * rock_mult
 
-    return min(1.0, damage)
+    # Spikes (Grounded only)
+    spikes_layers = side_hazards.get("spikes", 0)
+    if spikes_layers > 0 and not is_airborne:
+        spikes_dmg = [0.0, 0.125, 0.1667, 0.25][min(3, spikes_layers)]
+        total_dmg += spikes_dmg
+
+    return min(1.0, total_dmg)
+

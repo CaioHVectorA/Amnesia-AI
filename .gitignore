@@ -5,4 +5,8 @@ __pycache__/
 .venv/
 venv/
 *.sqlite
-data/replays/gen9randombattle/
+data/replays/gen9randombattle/
+external/pokemon-showdown/node_modules/
+external/pokemon-showdown/dist/
+external/**/target/
+external/**/__pycache__/

@@ -1,0 +1,47 @@
+{
+  "MaxBasePower": {
+    "win_rate": 70.0,
+    "wins": 14,
+    "losses": 6,
+    "ties": 0,
+    "avg_turns": 24.75,
+    "avg_hero_switches": 3.4,
+    "avg_hero_moves": 24.75
+  },
+  "SimpleHeuristics": {
+    "win_rate": 25.0,
+    "wins": 5,
+    "losses": 15,
+    "ties": 0,
+    "avg_turns": 31.75,
+    "avg_hero_switches": 5.2,
+    "avg_hero_moves": 31.75
+  },
+  "KaizoPlus": {
+    "win_rate": 25.0,
+    "wins": 5,
+    "losses": 15,
+    "ties": 0,
+    "avg_turns": 24.4,
+    "avg_hero_switches": 4.7,
+    "avg_hero_moves": 24.4
+  },
+  "EmeraldKaizo": {
+    "win_rate": 30.0,
+    "wins": 6,
+    "losses": 13,
+    "ties": 1,
+    "avg_turns": 36.15,
+    "avg_hero_switches": 4.9,
+    "avg_hero_moves": 36.05
+  },
+  "FoulPlay": {
+    "win_rate": 10.0,
+    "wins": 2,
+    "losses": 18,
+    "ties": 0,
+    "avg_turns": 28.15,
+    "avg_hero_switches": 5.05,
+    "avg_hero_moves": 28.1
+  }
+}
