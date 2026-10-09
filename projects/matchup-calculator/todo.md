@@ -1,2 +1,0 @@
-- [ ] Get pokemon showdown matchups formatted dataset
-- [ ] Use neural networks model? Get a big dataset

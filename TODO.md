@@ -1,125 +1,102 @@
-# TODO.md — Amnesia-AI Roadmap & Task Backlog
+# TODO.md — Phased Execution Roadmap (v2)
 
-This backlog tracks the development roadmap of **Amnesia-AI**, prioritized from foundational infrastructure to high-level model architectures and competitive ladder deployment.
-
----
-
-## Roadmap Summary & Progress
-
-- [ ] **Phase 1**: Simulation Engine & State Parser *(In Progress)*
-- [ ] **Phase 2**: State Encoding & Feature Pipeline *(Next Up)*
-- [ ] **Phase 3**: Predictive Sub-Models (Moveset, Matchup, Classifier)
-- [ ] **Phase 4**: Agent Decision Architectures (Heuristic $\rightarrow$ Search $\rightarrow$ RL)
-- [ ] **Phase 5**: Showdown Client Integration & WebSocket Bot
-- [ ] **Phase 6**: Evaluation, Telemetry & Ladder Progression
+This roadmap outlines the prioritized engineering phases to implement, train, evaluate, and deploy **Amnesia-AI v2**.
 
 ---
 
-## 1. Phase 1: Simulation Engine & State Parser (`projects/simulator`)
+## 📋 Status Overview
 
-- [x] Integrate `@pkmn/sim` and `pokemon-showdown` with Bun runtime.
-- [x] Implement team parsing and packing using `@pkmn/sets` (`src/sets.ts`).
-- [x] Build multi-stream execution test bench (`src/sim.ts`).
-- [ ] **Stream Normalization & Type Definitions** `[HIGH PRIORITY]`:
-  - [ ] Create TypeScript types for all Showdown battle protocol messages (`|request|`, `|move|`, `|switch|`, `|-damage|`, `|-boost|`, `|-weather|`, `|-fieldstart|`, `|faint|`).
-  - [ ] Write a stream state accumulator that turns a raw battle log stream into a deterministic `BattleState` object.
-  - [ ] Correctly parse `|request|` JSON payloads to determine legal moves, legal switches, and forced trapped/struggle states.
-- [ ] **Gymnasium / RL Environment Wrapper** `[HIGH PRIORITY]`:
-  - [ ] Implement an OpenAI Gym / Gymnasium compatible API (`reset()`, `step(action)`, `render()`).
-  - [ ] Define standardized discrete action space (Moves 1–4, Switches 1–6, Mega/Z/Dynamax/Tera flags).
-  - [ ] Support self-play battle environments (Agent vs. Agent, Agent vs. RandomPlayerAI, Agent vs. Baseline Heuristic).
-- [ ] **Performance Benchmarking**:
-  - [ ] Profile and achieve $\ge 1,000$ battles/sec for headless self-play rollouts.
+- [x] **Phase 0: Clean Slate & Foundation**
+  - [x] Archive v1 legacy codebase to `it_failed` branch and push to GitHub.
+  - [x] Create clean `v2-selfplay-ppo` branch.
+  - [x] Purge all legacy multi-runtime bloat and monorepo files.
+  - [x] Install and verify official `poke-env` and `gymnasium` dependencies.
+  - [x] Establish foundational documentation: `AGENTS.md`, `CONTEXT.md`, `METAS.md`, `TODO.md`.
 
 ---
 
-## 2. Phase 2: State Representation & Feature Engineering
+## 🚀 Phase 1: State Representation & Environment (`src/env.py`)
 
-- [ ] **Numerical Vectorization / Tensor Encoding** `[HIGH PRIORITY]`:
-  - [ ] Active Pokémon features: Current HP %, Status condition, Boost stages (-6 to +6 for Atk, Def, SpA, SpD, Spe, Acc, Eva), Known moves & PP, Types.
-  - [ ] Bench Pokémon features: Alive/Fainted status, HP %, Known moves, Item status (knocked off vs active).
-  - [ ] Field & Global state: Active weather & turns remaining, Active terrain & turns remaining, Entry hazards on each side (Stealth Rock, Spikes count, Toxic Spikes, Sticky Web), Screens (Reflect, Light Screen, Aurora Veil), Trick Room / Tailwind.
-  - [ ] Opponent belief state: Encoded probabilistic distribution over unrevealed Pokémon, items, and moves.
-- [ ] **Embedding Layer**:
-  - [ ] Entity embeddings for Pokémon species, types, moves, items, and abilities.
-
----
-
-## 3. Phase 3: Analytical Sub-Models
-
-### 3.1 Type Classifier (`projects/type-classifier`)
-- [x] Seed pokedex dataset (`seed_data.py`).
-- [x] MultiLabel binarization of abilities, exploratory analysis, and baseline Random Forest classifier.
-- [ ] Refactor notebook into clean, repeatable training CLI script (`train.py`, `model.pkl`).
-- [ ] Evaluate model on Smogon CAP (Create-A-Pokémon) and community Fakemons.
-- [ ] Add dual-type multi-label classification (predicting both Primary and Secondary types).
-
-### 3.2 Matchup Calculator (`projects/matchup-calculator`)
-- [ ] Port/integrate `@smogon/calc` damage calculation library for deterministic min/max damage roll computation.
-- [ ] Build a fast pairwise matchup advantage lookup table (offensive/defensive matchup score between any two Pokémon).
-- [ ] Speed tier analysis (which Pokémon outspeeds considering EVs, natures, Choice Scarf, and speed boosts).
-
-### 3.3 Moveset Recommendation (`projects/moveset-recomendation`)
-- [ ] Scrape Smogon monthly format usage statistics (Chaos / JSON dumps from `smogon.com/stats`).
-- [ ] Build a Bayesian prior or Neural predictor: Given an opponent Pokémon in format $F$, output probabilities for:
-  - Top 4 moves.
-  - Held item (e.g., Choice Specs vs Choice Scarf vs Leftovers).
-  - Ability (e.g., Static vs Lightning Rod).
-  - EV spread archetype (Offensive vs Bulky/Defensive).
-
-### 3.4 Team Optimizer (`projects/team-optimizer`)
-- [ ] Calculate defensive weakness/resistance overlap matrix for a 6-Pokémon roster.
-- [ ] Role compression metric (Hazards + Hazard Removal + Physical Wall + Special Wall + Wincon / Sweeper).
-- [ ] Suggest optimal 6th Pokémon to complete an incomplete core.
+- [ ] **1.1 Canonical Vocabulary & Entity Mappings**:
+  - [ ] Extract canonical integer ID mappings from `poke-env` data for:
+    - 1,023 Species
+    - 731 Moves
+    - 368 Items
+    - 238 Abilities
+  - [ ] Handle unrevealed/unknown tokens (`<UNK>`, `<NONE>`) for partial observability.
+- [ ] **1.2 Hierarchical State Tensor Extractor**:
+  - [ ] Extract active Pokémon categorical & continuous features.
+  - [ ] Extract 5 bench Pokémon categorical & continuous features.
+  - [ ] Extract opponent active Pokémon (revealed features) & 5 opponent bench members.
+  - [ ] Extract global field conditions (weather, terrain, side conditions, hazards).
+- [ ] **1.3 Dynamic Action Masking**:
+  - [ ] Build exact 9-dimensional binary mask $s \in \{0, 1\}^9$ (4 moves + 5 switches).
+  - [ ] Zero out fainted switches, trapped Pokémon switches, and PP-depleted moves.
+- [ ] **1.4 Gymnasium Environment Wrapper**:
+  - [ ] Wrap `poke-env.player.Player` into a clean Gymnasium `Env` interface.
+  - [ ] Support both `gen7randombattle` and `gen8randombattle`.
 
 ---
 
-## 4. Phase 4: Battle Agent Decision Architectures
+## 🧠 Phase 2: 1.3M Parameter Neural Architecture (`src/model.py`)
 
-### 4.1 Tier 1: Rule-Based & Heuristic Agent
-- [ ] Implement a damage-maximizing greedy agent (chooses highest expected damage move).
-- [ ] Add basic switch heuristics (switch out if facing 4x weakness or negligible damage output; switch into resistant wall).
-- [ ] Add hazard and setup logic (prioritize Stealth Rock turn 1 if opponent has high rock weakness).
-
-### 4.2 Tier 2: Search-Based Agent (Expectiminimax / Monte Carlo Tree Search)
-- [ ] Implement Expectiminimax tree search considering simultaneous turn matrices and damage roll probability distributions.
-- [ ] Implement MCTS with belief state sampling (determinization for hidden information).
-- [ ] Pruning: Limit branch expansion to top-3 viable moves and sensible switches.
-
-### 4.3 Tier 3: Reinforcement Learning & Deep Neural Network
-- [ ] Policy & Value Network architecture using PyTorch / ONNX Runtime.
-- [ ] **Behavioral Cloning (BC) Offline Pre-training Pipeline** `[HIGH PRIORITY]`:
-  - [ ] Treinamento supervisionado com ponderação amostral por Elo ($w$) sobre os replays indexados em SQLite.
-  - [ ] Implementação de DAgger e IQL (Implicit Q-Learning) para mitigar erro composto e estados fora da distribuição.
-  - [ ] Avaliação de métricas de acurácia Top-1 e Top-3 frente a jogadas de especialistas humanos ($\ge 1800$ Elo).
-- [ ] **Model Merging & Checkpoint Blending Engine**:
-  - [ ] Implementação de utilitário de fusão de pesos via SLERP e Linear Weight Averaging.
-  - [ ] Merge de especialistas por fase de jogo (Early Game vs Late Game) e por formato (`Random Battles` vs `OU`).
-  - [ ] Roteamento dinâmico via Mixture of Experts (MoE) baseado no número de Pokémon vivos e hazards em campo.
-- [ ] Deep Q-Learning (DQN) / Proximal Policy Optimization (PPO) training loop against self-play pools.
-- [ ] Opponent modeling module adapting policy based on observed opponent playstyle (aggressive vs stall/conservative).
+- [ ] **2.1 Entity Embedding Modules**:
+  - [ ] `nn.Embedding(1023, 128)` for Species.
+  - [ ] `nn.Embedding(731, 128)` for Moves.
+  - [ ] `nn.Embedding(368, 128)` for Items.
+  - [ ] `nn.Embedding(238, 128)` for Abilities.
+- [ ] **2.2 Team-Level Permutation Invariant Pooling**:
+  - [ ] Combine continuous stats with embedding vectors for each Pokémon.
+  - [ ] Apply Max-Pooling over bench members to achieve order invariance.
+- [ ] **2.3 Dual Actor-Critic Heads**:
+  - [ ] **Actor Head**: Candidate action scoring matrix producing logits $p \in \mathbb{R}^9$.
+  - [ ] **Action Masker**: Renormalized masked softmax layer guaranteeing zero illegal choice probability.
+  - [ ] **Critic Head**: Feedforward MLP producing scalar board state advantage estimate $V(s) \in [-1.0, +1.0]$.
+- [ ] **2.4 Sanity & Gradient Verification**:
+  - [ ] Write unit test verifying forward pass tensor shapes, device placement (CUDA TF32), and backward gradients.
 
 ---
 
-## 5. Phase 5: Showdown Client & Infrastructure
+## ⚡ Phase 3: Pure Self-Play PPO Engine (`src/train.py`)
 
-- [x] Prototype Selenium-based automation (`main.ipynb`).
-- [ ] **Native WebSocket Showdown Bot** `[HIGH PRIORITY]`:
-  - [ ] Implement lightweight WebSocket client connecting to `sim3.psim.us:80/showdown/websocket`.
-  - [ ] Automated authentication / challenge acceptance via Showdown action commands (`/challenge`, `/accept`, `/join`).
-  - [ ] Automatic reconnection, rate-limit adherence, and anti-ban safeguards.
-- [ ] **Battle Replay Recorder**:
-  - [ ] Export played battle replays and logs in JSON format for offline dataset training and retrospective analysis.
+- [ ] **3.1 High-Throughput Self-Play Match Runner**:
+  - [ ] Configure two `poke-env` players sharing the same model parameters $f_\theta$.
+  - [ ] Run parallel asynchronous self-play battles.
+  - [ ] Collect complete episode trajectories from both player perspectives.
+- [ ] **3.2 Episode-Level Generalized Advantage Estimation (GAE)**:
+  - [ ] Implement full trajectory backward discounting ($\gamma=0.99, \lambda=0.95$).
+  - [ ] Ensure terminal win/loss ($\pm 1.0$) propagates back through all game turns.
+  - [ ] Incorporate auxiliary shaping ($-0.0125$ own faint, $+0.0025$ super-effective).
+- [ ] **3.3 PPO Optimization Loop**:
+  - [ ] Implement clipped surrogate loss ($L^{\text{CLIP}}$ with $\epsilon=0.2$).
+  - [ ] Implement Critic MSE loss ($L^{\text{VF}}$).
+  - [ ] Implement Entropy bonus ($S[\pi]$) for exploration control.
+  - [ ] Gradient clipping ($\text{max\_norm}=1.0$) and AdamW optimizer.
+- [ ] **3.4 Telemetry & Checkpointing**:
+  - [ ] Real-time logging: turns/sec, actor loss, critic loss, entropy, win rate.
+  - [ ] Checkpoint manager saving best model weights (`weights/amnesia_v2.pt`).
 
 ---
 
-## 6. Phase 6: Evaluation & Ladder Milestones
+## 🏆 Phase 4: Tournament & Baseline Evaluation (`src/evaluate.py`)
 
-- [ ] **Benchmark vs RandomPlayerAI**: Achieve $>95\%$ win rate.
-- [ ] **Benchmark vs Smogon Baseline Bots** (e.g. standard rule-based Showdown bots): Achieve $>75\%$ win rate.
-- [ ] **Random Battles Ladder Deployment**:
-  - [ ] Reach 1300 Elo.
-  - [ ] Reach 1500 Elo.
-  - [ ] Reach 1700+ Elo.
-- [ ] **OverUsed (OU) Ladder Deployment**:
-  - [ ] Reach Top 500 leaderboard.
+- [ ] **4.1 Baseline Benchmarking Suite**:
+  - [ ] Automated 500-match head-to-head tournament vs `RandomPlayer` (Goal: >99%).
+  - [ ] Automated 500-match head-to-head tournament vs `MaxBasePowerPlayer` (Goal: >88%).
+  - [ ] Automated 500-match head-to-head tournament vs `SimpleHeuristicsPlayer` (Goal: >65%).
+- [ ] **4.2 Glicko-1 & Elo Tracking**:
+  - [ ] Compute official Glicko-1 rating curves across training iterations.
+  - [ ] Track win rates across historical checkpoint pool to prevent cyclic forgetting.
+
+---
+
+## 🌐 Phase 5: Live Showdown Ladder Client (`src/client.py`)
+
+- [ ] **5.1 Production Ladder Bot**:
+  - [ ] Connect directly to official Pokémon Showdown server (`sim3.psim.us`).
+  - [ ] Handle automated login, authentication assertion, and avatar configuration.
+  - [ ] Enqueue in ranked `gen7randombattle` / `gen8randombattle` ladder.
+- [ ] **5.2 Match Logging & Public Spectator Links**:
+  - [ ] Real-time spectator URLs (`https://play.pokemonshowdown.com/battle-...`).
+  - [ ] Save full match replays locally for post-match tactical analysis.
+  - [ ] Reach and sustain Target Milestone: **>1600 Glicko-1 rating**.
